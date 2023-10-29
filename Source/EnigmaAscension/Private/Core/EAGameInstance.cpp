@@ -80,7 +80,7 @@ void UEAGameInstance::CreateServer()
 	FOnlineSessionSettings SessionSettings;
 	SessionSettings.bAllowJoinInProgress = true;
 	SessionSettings.bIsDedicated=false;
-	SessionSettings.bIsLANMatch=true;
+	SessionSettings.bIsLANMatch=false;
 	SessionSettings.bShouldAdvertise=true;
 	SessionSettings.bUsesPresence=true;
 	SessionSettings.NumPublicConnections=8;
@@ -94,7 +94,7 @@ void UEAGameInstance::JoinServer()
 {
 	UE_LOG(LogEANetworking, Log, TEXT("Join Server"));
 	SessionSearch = MakeShareable(new FOnlineSessionSearch());
-	SessionSearch->bIsLanQuery = true;
+	SessionSearch->bIsLanQuery = false;
 	SessionSearch->MaxSearchResults=10000;
 	SessionSearch->QuerySettings.Set(FName(TEXT("PRESENCESEARCH")),true,EOnlineComparisonOp::Equals);
 
