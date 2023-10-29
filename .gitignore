@@ -72,3 +72,7 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+# External Assets From Unreal Market Place
+Content/ParagonCountess/*
+Content/ParagonGreystone/*
