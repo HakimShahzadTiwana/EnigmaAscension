@@ -5,6 +5,7 @@
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
 #include "Kismet/GameplayStatics.h"
+#include "Online/OnlineSessionNames.h"
 
 DEFINE_LOG_CATEGORY(LogEANetworking);
 UEAGameInstance::UEAGameInstance()
@@ -14,20 +15,25 @@ UEAGameInstance::UEAGameInstance()
 void UEAGameInstance::OnFindSessionCompleted(bool Succeeded)
 {
 	UE_LOG(LogEANetworking, Log, TEXT("OnFindSessionCompleted"));
-	if(Succeeded)
-	{
-		TArray<FOnlineSessionSearchResult> SearchResults = SessionSearch->SearchResults;
-		UE_LOG(LogEANetworking, Log, TEXT("Find Session Succeeded, found %d Sessions"),SearchResults.Num());
-		if(SearchResults.Num()>0)
-		{
-			UE_LOG(LogEANetworking, Log, TEXT("Joining Server..."));
-			SessionInterface->JoinSession(0,"My Session",SearchResults[0]);
-		}
-	}
-	else
-	{
-		UE_LOG(LogEANetworking, Warning, TEXT("Find Session Failed"));
-	}
+	// if(Succeeded)
+	// {
+	// 	FString Session_Type;
+	// 	
+	// 	SessionSearch->QuerySettings.Get(FName("EA_Session_Type"),Session_Type);
+	// 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue, FString::Printf(TEXT("%s"),*Session_Type));
+	// 	TArray<FOnlineSessionSearchResult> SearchResults = SessionSearch->SearchResults;
+	// 	UE_LOG(LogEANetworking, Log, TEXT("Find Session Succeeded, found %d Sessions"),SearchResults.Num());
+	// 	GEngine->AddOnScreenDebugMessage(-1, 60, FColor::Blue, FString::Printf(TEXT("Find Session Succeeded, found %d Sessions"),SearchResults.Num()));
+	// 	if(SearchResults.Num()>0)
+	// 	{
+	// 		UE_LOG(LogEANetworking, Log, TEXT("Joining Server..."));
+	// 		SessionInterface->JoinSession(0,"My Session",SearchResults[0]);
+	// 	}
+	// }
+	// else
+	// {
+	// 	UE_LOG(LogEANetworking, Warning, TEXT("Find Session Failed"));
+	// }
 }
 
 void UEAGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
@@ -66,6 +72,12 @@ void UEAGameInstance::OnCreateSessionCompleted(FName SessionName, bool Succeeded
 	if(Succeeded)
 	{
 		UE_LOG(LogEANetworking, Log, TEXT("Create Session Succeeded"));
+		FOnlineSessionSettings* Settings = SessionInterface->GetSessionSettings(SessionName);
+		for (auto Setting : Settings->Settings)
+		{
+			UE_LOG(LogEANetworking, Log, TEXT("Name : %s, Value : %s"),*Setting.Key.ToString(), *Setting.Value.ToString());
+			GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue, FString::Printf(TEXT("Name : %s, Value : %s"),*Setting.Key.ToString(), *Setting.Value.ToString()));
+		}
 		GetWorld()->ServerTravel("/Game/Maps/TestMap?listen");
 	}
 	else
@@ -84,6 +96,11 @@ void UEAGameInstance::CreateServer()
 	SessionSettings.bShouldAdvertise=true;
 	SessionSettings.bUsesPresence=true;
 	SessionSettings.NumPublicConnections=8;
+	FOnlineSessionSetting EA_Identifier_Setting;
+	EA_Identifier_Setting.Data=FString("EA_Session");
+	EA_Identifier_Setting.AdvertisementType=EOnlineDataAdvertisementType::ViaOnlineServiceAndPing;
+	SessionSettings.Settings.Add(FName("EA_Session_Type"),EA_Identifier_Setting);
+	SessionSettings.Set(FName("EA_Session_Type"),FString("EA_Session"),EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 	
 	SessionInterface->CreateSession(0,FName("My Session"),SessionSettings);
 	
@@ -95,8 +112,9 @@ void UEAGameInstance::JoinServer()
 	UE_LOG(LogEANetworking, Log, TEXT("Join Server"));
 	SessionSearch = MakeShareable(new FOnlineSessionSearch());
 	SessionSearch->bIsLanQuery = false;
-	SessionSearch->MaxSearchResults=10000;
-	SessionSearch->QuerySettings.Set(FName(TEXT("PRESENCESEARCH")),true,EOnlineComparisonOp::Equals);
-
+	SessionSearch->MaxSearchResults=200000;
+	SessionSearch->QuerySettings.Set(SEARCH_PRESENCE,true,EOnlineComparisonOp::Equals);
+	SessionSearch->QuerySettings.SearchParams.Add(FName("EA_Session_Type"),FString("EA_Session"));
+	SessionSearch->QuerySettings.Set(FName("EA_Session_Type"),FString("EA_Session"),EOnlineComparisonOp::Equals);
 	SessionInterface->FindSessions(0,SessionSearch.ToSharedRef());
 }

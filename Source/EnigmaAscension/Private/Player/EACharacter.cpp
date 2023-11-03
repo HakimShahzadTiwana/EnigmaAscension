@@ -114,7 +114,7 @@ void AEACharacter::OnRep_PlayerState()
 
 UAbilitySystemComponent* AEACharacter::GetAbilitySystemComponent() const 
 {
-	UE_LOG(LogGAS,Log,TEXT("AEACharacter::GetAbilitySystemComponent()"));
+	//UE_LOG(LogGAS,Log,TEXT("AEACharacter::GetAbilitySystemComponent()"));
 	return AbilitySystemComponent;
 }
 

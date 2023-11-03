@@ -15,7 +15,7 @@ UEAAttributeSet::UEAAttributeSet()
 
 void UEAAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
-	UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::PostGameplayEffectExecute"));
+	//UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::PostGameplayEffectExecute"));
 	Super::PostGameplayEffectExecute(Data);
 	
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())

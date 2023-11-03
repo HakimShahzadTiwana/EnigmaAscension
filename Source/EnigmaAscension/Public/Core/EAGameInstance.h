@@ -19,6 +19,7 @@ class ENIGMAASCENSION_API UEAGameInstance : public UGameInstance
 public:
 	UEAGameInstance();
 protected:
+	
 	IOnlineSessionPtr SessionInterface;
 	TSharedPtr<FOnlineSessionSearch> SessionSearch;
 	
@@ -32,4 +33,8 @@ protected:
 	void CreateServer();
 	UFUNCTION(BlueprintCallable)
 	void JoinServer();
+	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
+	void BP_CreateServer();
+	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
+	void BP_JoinServer();
 };
