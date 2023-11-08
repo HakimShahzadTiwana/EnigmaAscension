@@ -21,7 +21,8 @@ class ENIGMAASCENSION_API IEASessionInterface
 {
 	GENERATED_BODY()
 
-	
+	// This interface is WIP
+	// Idea is to have a separate container for session logic to add into the game instance
 public:
 
 	

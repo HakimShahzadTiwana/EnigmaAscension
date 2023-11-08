@@ -17,12 +17,18 @@ class ENIGMAASCENSION_API UEAGameplayAbility : public UGameplayAbility
 	GENERATED_BODY()
 public:
 	UEAGameplayAbility();
+
+	//Define key binds for game abilities in blueprint by selecting the appropriate Ability Input
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="AbilityID")
 	EEAAbilityInput AbilityInputID=EEAAbilityInput::None;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="AbilityID")		
 	EEAAbilityInput AbilityID=EEAAbilityInput::None;
+
+
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TSubclassOf<UGameplayEffect> DamageEffect;
+
+	// TODO: WIP for Game Ability Implementation in C++ (Not working currently)
 	UFUNCTION(BlueprintCallable)
 	void OnAttackEventReceived(FGameplayEventData Payload);
 	UFUNCTION(BlueprintCallable)

@@ -17,32 +17,37 @@ UEAInteractionComponent::UEAInteractionComponent()
 
 void UEAInteractionComponent::PrimaryInteract()
 {
+	//Create Collision Query Parameters
 	FCollisionObjectQueryParams ObjectQueryParams;
+	//Register collisions with only World Dynamic Types
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
-	
-	AActor* Owner = GetOwner();
 
+	//Get locations of eyes of the player character
+	AActor* Owner = GetOwner();
 	FVector EyeLocation;
 	FRotator EyeRotation;
 	Owner->GetActorEyesViewPoint(EyeLocation,EyeRotation);
 
+	//Calculate how far from the eye location do we want to check for collisions
 	FVector End = EyeLocation + (EyeRotation.Vector() * 1000);
 
-	//FHitResult Hit;
-	//GetWorld()->LineTraceSingleByObjectType(Hit,EyeLocation,End,ObjectQueryParams);
-
+	
 	TArray<FHitResult> Hits;
+	//Set sphere collision trace
 	FCollisionShape Shape;
 	float Radius = 30.0f;
 	Shape.SetSphere(Radius);
-	GetWorld()->SweepMultiByObjectType(Hits,EyeLocation,End,FQuat::Identity,ObjectQueryParams,Shape);
 
+	//Detect collision hits with objects from eye location to end point
+	GetWorld()->SweepMultiByObjectType(Hits,EyeLocation,End,FQuat::Identity,ObjectQueryParams,Shape);
+	
 	for(auto Hit : Hits)
 	{
 		if(AActor* HitActor = Hit.GetActor())
 		{
 			if(HitActor->Implements<UEAGameplayInterface>())
 			{
+				//If hit actor implements the Gameplay interface then execute the interact implementation
 				APawn* MyPawn = Cast<APawn>(Owner);
 				IEAGameplayInterface::Execute_Interact(HitActor,MyPawn);
 				break;	

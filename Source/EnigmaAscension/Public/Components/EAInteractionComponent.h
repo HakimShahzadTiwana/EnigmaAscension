@@ -16,6 +16,7 @@ public:
 	// Sets default values for this component's properties
 	UEAInteractionComponent();
 
+	//Actors using this component will have a primary interact function 
 	UFUNCTION()
 	void PrimaryInteract();
 protected:

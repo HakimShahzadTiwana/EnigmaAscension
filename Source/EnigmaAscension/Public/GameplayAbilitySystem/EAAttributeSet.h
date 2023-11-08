@@ -23,7 +23,10 @@ class ENIGMAASCENSION_API UEAAttributeSet : public UAttributeSet
 	GENERATED_BODY()
 public:
 	UEAAttributeSet();
+
+	// Called after game play effect is executed to change attribute values
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+	// Used for replication of attributes
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty> & OutLifetimeProps) const override;
 	
 	UPROPERTY(BlueprintReadOnly, Category="Health",ReplicatedUsing = OnRep_MaxHealth)
@@ -55,6 +58,7 @@ public:
 	FGameplayAttributeData AttackDamage;
 	ATTRIBUTE_ACCESSORS(UEAAttributeSet,AttackDamage)
 
+	// Called when attribute values have changed
 	UFUNCTION()
 	void OnRep_MaxStamina(const FGameplayAttributeData& OldMaxStamina);
 	UFUNCTION()

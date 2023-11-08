@@ -22,6 +22,7 @@ class ENIGMAASCENSION_API IEAGameplayInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	// Interact function to implement for actors using this interface, can be implemented in code or blueprints
 	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
 	void Interact(APawn* InstigatorPawn);
 };

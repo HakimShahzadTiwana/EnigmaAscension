@@ -10,7 +10,7 @@
 #include "EAGameInstance.generated.h"
 
 /**
- * 
+ * Used for creating sessions (Implementation in blueprints using Advanced Session Plugin)
  */
 DECLARE_LOG_CATEGORY_EXTERN(LogEANetworking,Log,All);
 UCLASS()
@@ -20,9 +20,9 @@ class ENIGMAASCENSION_API UEAGameInstance : public UGameInstance, public IEASess
 public:
 	UEAGameInstance();
 	
-	const FName EA_SESSION_NAME = "EA_Game_Session";
-	const FName EA_SESSION_MAIN_FILTER_KEY = "EA_Session";
-	const FString EA_SESSION_MAIN_FILTER_VALUE = "EA_Simple_Session";
+	//const FName EA_SESSION_NAME = "EA_Game_Session";
+	//const FName EA_SESSION_MAIN_FILTER_KEY = "EA_Session";
+	//const FString EA_SESSION_MAIN_FILTER_VALUE = "EA_Simple_Session";
 protected:
 	
 	virtual void Init() override;
@@ -36,8 +36,8 @@ protected:
 	void FindSessions();
 
 	//Using Advanced Session Interfaces in Child BP
-	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
-	void JoinSession();
+	//UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
+	//void JoinSession();
 	
 	
 	

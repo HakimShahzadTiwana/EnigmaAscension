@@ -212,7 +212,6 @@ void AEACharacter::InitAttr()
 	AbilitySystemComponent->RemoveActiveEffects(Query);
 }
 
-
 void AEACharacter::HandlePrimaryAttack_Implementation()
 {
 	SendGameplayEventFromHit(PrimaryAttackTag,PrimaryAttackRadius);
@@ -269,9 +268,6 @@ void AEACharacter::PlayCharacterDeathMontage()
 
 void AEACharacter::SpawnCharacter()
 {
-
-	// FActorSpawnParameters SpawnParams;
-	// GetWorld()->SpawnActor<AEACharacter>(FVector::ZeroVector,FRotator::ZeroRotator,SpawnParams);
 	InitializeAttributes();
 	EnableInput(UGameplayStatics::GetPlayerController(GetWorld(),0));
 	SetActorLocation(FVector(-12090.000000,-16200.000000,70.000000));

@@ -15,30 +15,11 @@ UEAAttributeSet::UEAAttributeSet()
 
 void UEAAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
-	//UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::PostGameplayEffectExecute"));
 	Super::PostGameplayEffectExecute(Data);
 	
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(),0.0f,GetMaxHealth()));
-		// AActor* DamagedActor = nullptr;
-		// AController* DamagedController = nullptr;
-		// if (Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
-		// {
-		// 	DamagedActor = Data.Target.AbilityActorInfo->AvatarActor.Get();
-		// 	DamagedController = Data.Target.AbilityActorInfo->PlayerController.Get();
-			// if (GetHealth() <= 0)
-			// {
-			// 	// Handle death with GASCharacter. Note this is just one example of how this could be done.
-			// 	if (AEACharacter* GASChar = Cast<AEACharacter>(Data.))
-			// 	{
-			// 		//TODO: Construct a gameplay cue event for this death
-			// 		//For now call function that will play death montage
-			// 		GASChar->PlayCharacterDeathMontage();
-			// 	}
-			// }
-		//}
-		
 	}
 	
 	if (Data.EvaluatedData.Attribute == GetStaminaAttribute())
@@ -50,29 +31,6 @@ void UEAAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 	{
 		SetMana(FMath::Clamp(GetMana(),0.0f,GetMaxMana()));
 	}
-	
-   
-	    // Get the Target actor
-        
-    	// // Get the Source actor
-    	// AActor* AttackingActor = nullptr;
-    	// AController* AttackingController = nullptr;
-    	// AController* AttackingPlayerController = nullptr;
-    	// if (Source && Source->AbilityActorInfo.IsValid() && Source->AbilityActorInfo->AvatarActor.IsValid())
-    	// {
-    	//     AttackingActor = Source->AbilityActorInfo->AvatarActor.Get();
-    	//     AttackingController = Source->AbilityActorInfo->PlayerController.Get();
-    	//     AttackingPlayerController = Source->AbilityActorInfo->PlayerController.Get();
-    	//     if (AttackingController == nullptr && AttackingActor != nullptr)
-    	//     {
-    	//         if (APawn* Pawn = Cast<APawn>(AttackingActor))
-    	//         {
-    	//             AttackingController = Pawn->GetController();
-    	//         }
-    	//     }
-    	// }
-    
-	
 }
 
 void UEAAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -87,7 +45,6 @@ void UEAAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME_CONDITION_NOTIFY(UEAAttributeSet,Mana,COND_None,REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UEAAttributeSet,AttackDamage,COND_None,REPNOTIFY_Always);
 }
-
 
 void UEAAttributeSet::OnRep_MaxStamina(const FGameplayAttributeData& OldMaxStamina)
 {
