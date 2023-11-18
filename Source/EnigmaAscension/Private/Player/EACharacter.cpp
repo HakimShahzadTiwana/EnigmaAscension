@@ -50,21 +50,8 @@ void AEACharacter::Tick(float DeltaTime)
 // Called to bind functionality to input
 void AEACharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	UE_LOG(LogGAS,Log,TEXT("AEACharacter::SetupPlayerInputComponent()"));
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	//Redundant code because one may be init before the other so this will allow proper initialization
-	if(AbilitySystemComponent && InputComponent)
-	{
-		const FGameplayAbilityInputBinds Binds("Confirm","Cancel",FTopLevelAssetPath(GetPathNameSafe(UClass::TryFindTypeSlow<UEnum>("EEAAbilityInput"))),static_cast<int32>(EEAAbilityInput::Confirm),static_cast<int32>(EEAAbilityInput::Cancel));
-		AbilitySystemComponent->BindAbilityActivationToInputComponent(InputComponent,Binds);
-		UE_LOG(LogGAS,Log,TEXT("AEACharacter::SetupPlayerInputComponent Inputs have been binded"));
-	}
-	else
-	{
-
-		UE_LOG(LogGAS,Warning,TEXT("AEACharacter::SetupPlayerInputComponent - AbilitySystemComponent or InputComponent are null"));
-	}
-	
+	// UE_LOG(LogGAS,Log,TEXT("AEACharacter::SetupPlayerInputComponent()"));
+	// Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
 void AEACharacter::PossessedBy(AController* NewController)
@@ -94,17 +81,17 @@ void AEACharacter::OnRep_PlayerState()
 		AbilitySystemComponent->InitAbilityActorInfo(this,this);
 		InitializeAttributes();
 
-		//Client needs to bind the inputs
-		if(AbilitySystemComponent && InputComponent)
-		{
-			const FGameplayAbilityInputBinds Binds("Confirm","Cancel",FTopLevelAssetPath(GetPathNameSafe(UClass::TryFindTypeSlow<UEnum>("EEAAbilityInput"))),static_cast<int32>(EEAAbilityInput::Confirm),static_cast<int32>(EEAAbilityInput::Cancel));
-			AbilitySystemComponent->BindAbilityActivationToInputComponent(InputComponent,Binds);
-			UE_LOG(LogGAS,Log,TEXT("AEACharacter::SetupPlayerInputComponent Inputs have been binded"));
-		}
-		else
-		{
-			UE_LOG(LogGAS,Warning,TEXT("AEACharacter::OnRep_PlayerState - AbilitySystemComponent or InputComponent are null"));
-		}
+		// //Client needs to bind the inputs
+		// if(AbilitySystemComponent && InputComponent)
+		// {
+		// 	const FGameplayAbilityInputBinds Binds("Confirm","Cancel",FTopLevelAssetPath(GetPathNameSafe(UClass::TryFindTypeSlow<UEnum>("EEAAbilityInput"))),static_cast<int32>(EEAAbilityInput::Confirm),static_cast<int32>(EEAAbilityInput::Cancel));
+		// 	AbilitySystemComponent->BindAbilityActivationToInputComponent(InputComponent,Binds);
+		// 	UE_LOG(LogGAS,Log,TEXT("AEACharacter::SetupPlayerInputComponent Inputs have been binded"));
+		// }
+		// else
+		// {
+		// 	UE_LOG(LogGAS,Warning,TEXT("AEACharacter::OnRep_PlayerState - AbilitySystemComponent or InputComponent are null"));
+		// }
 	}
 	else
 	{
