@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "GameplayEffectTypes.h"
 #include "GameplayTagContainer.h"
+#include "UI/PlayerHUD.h"
 #include "EACharacter.generated.h"
 
 
@@ -73,6 +74,11 @@ protected:
 	TArray<TSubclassOf<class UGameplayEffect>> DefaultAttributeEffects;
 	UPROPERTY(BlueprintReadOnly,EditDefaultsOnly,Category="GAS|Defaults")
 	TArray<TSubclassOf<class UEAGameplayAbility>> DefaultAbilities;
+
+	UPROPERTY(EditAnywhere,Category="UI|PlayerHUD")
+	TSubclassOf<UPlayerHUD> PlayerHUDClass;
+	UPROPERTY()
+	UPlayerHUD* PlayerHUD;
 	
 	void OnHealthChanged(const FOnAttributeChangeData& OnAttributeChangeData);
 	void HideCharacterOnDeath();

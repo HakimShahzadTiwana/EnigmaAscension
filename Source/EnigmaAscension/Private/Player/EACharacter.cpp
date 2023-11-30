@@ -65,6 +65,11 @@ void AEACharacter::PossessedBy(AController* NewController)
 		InitializeAttributes();
 		//Only server should give the abilities
 		GiveDefaultAbilities();
+
+		if(IsLocallyControlled()){
+			PlayerHUD = CreateWidget<UPlayerHUD>(UGameplayStatics::GetPlayerController(GetWorld(),0),PlayerHUDClass);
+			PlayerHUD->AddToViewport();
+		}
 	}
 	else
 	{
