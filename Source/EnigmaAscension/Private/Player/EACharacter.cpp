@@ -67,6 +67,7 @@ void AEACharacter::PossessedBy(AController* NewController)
 		GiveDefaultAbilities();
 
 		if(IsLocallyControlled()){
+			UE_LOG(LogTemp,Warning,TEXT("AEACharacter::Player HUD Created"));
 			PlayerHUD = CreateWidget<UPlayerHUD>(UGameplayStatics::GetPlayerController(GetWorld(),0),PlayerHUDClass);
 			PlayerHUD->AddToViewport();
 		}
