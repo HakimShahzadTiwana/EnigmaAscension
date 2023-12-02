@@ -10,16 +10,20 @@
 /**
  * 
  */
-struct InputID
+USTRUCT()
+struct FInputID
 {
+	GENERATED_BODY()
 	int Frame;
 	// Owning Player Index
 	int InstigatorControllerID;
 };
 
-struct PlayerInputData
+USTRUCT()
+struct FPlayerInputData
 {
-	InputID PlayerInputID;
+	GENERATED_BODY()
+	FInputID PlayerInputID;
 	EEAAbilityInput InputType;
 	// Target Player Index
 	int TargetControllerID;
@@ -39,6 +43,10 @@ public:
 	void BindGasInputs();
 	UPROPERTY()
 	APawn* PlayerPawn;
+	UPROPERTY()
+	int MyPlayerIndex; // TODO: Set this in Game Mode
+	UPROPERTY()
+	int StartFrame;
 	
 	UFUNCTION()
 	void MoveForward(float X);
@@ -57,7 +65,9 @@ public:
 	UFUNCTION()
 	void StopSprint();
 
-
+	// Roll Back Net Code
+	UFUNCTION(Server, Reliable)
+	PlayerInputData Client_CollectInputData();
 	
 
 	
