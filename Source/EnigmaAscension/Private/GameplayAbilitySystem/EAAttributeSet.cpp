@@ -71,6 +71,8 @@ void UEAAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth)
 {
 	UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_Health"));
 	UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_Health -  New Health is %f, Old Max Stamina was : %f"),Health.GetCurrentValue(),OldHealth.GetCurrentValue());
+	// AEACharacter* Owner =  Cast<AEACharacter>(GetOwningActor());
+	// Owner->GetPlayerHUD()->SetHealth(Health.GetCurrentValue(),MaxHealth.GetCurrentValue());
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UEAAttributeSet,Health,OldHealth); 
 }
 

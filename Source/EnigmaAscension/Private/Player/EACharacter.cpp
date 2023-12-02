@@ -120,6 +120,11 @@ void AEACharacter::GiveAbilityToSelf(TSubclassOf<UEAGameplayAbility> Ability)
 	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Blue, FString::Printf(TEXT("Ability Given is : %s "),*AbilitySpec.GetDebugString()));
 }
 
+UPlayerHUD* AEACharacter::GetPlayerHUD()
+{
+	return PlayerHUD;
+}
+
 void AEACharacter::OnHealthChanged(const FOnAttributeChangeData& OnAttributeChangeData)
 {
 	if(OnAttributeChangeData.NewValue<=0)
