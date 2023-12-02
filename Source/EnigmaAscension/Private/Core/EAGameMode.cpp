@@ -11,6 +11,7 @@ void AEAGameMode::OnPostLogin(AController* NewPlayer)
 {
 	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::OnPostLogin"));
 	Super::OnPostLogin(NewPlayer);
+	Cast<AEAPlayerController>(NewPlayer)->Client_CreateHUD();
 	Cast<AEAPlayerState>(Cast<AEAPlayerController>(NewPlayer)->PlayerState)->MyPlayerIndex = GetNumPlayers()-1;
 	UE_LOG(LogGameMode, Log, TEXT("SetPlayer Index to %d"),GetNumPlayers()-1);
 	
@@ -26,21 +27,28 @@ void AEAGameMode::Tick(float DeltaSeconds)
 	InputBuffer.Add(Server_FrameCount);
 }
 
-void AEAGameMode::AddInputToBuffer(FPlayerInputData Data)
+void AEAGameMode::AddInputToBuffer(int ClientFrames, int InstigatorID, EEAAbilityInput InputType, int TargetID, float timestamp, float ping)
 {
 	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer"));
 	
-	const int* ClientStart = ClientStartFrame.Find(Data.PlayerInputID.InstigatorControllerID);
+	int* ClientStart = ClientStartFrame.Find(InstigatorID);
 	UE_LOG(LogGameMode, Log, TEXT("Client Start is : %d"),*ClientStart);
 
 	UE_LOG(LogGameMode, Log, TEXT("Server Frame Count was : %d"),Server_FrameCount);
 	
-	const int RealFrame = *ClientStart + Data.PlayerInputID.Frame;
+	const int RealFrame = *ClientStart +ClientFrames;
 	UE_LOG(LogGameMode, Log, TEXT("Real Frame is : %d"),RealFrame);
 	
 	
 	if(InputBuffer.Find(RealFrame))
 	{
+		FPlayerInputData Data;
+		Data.Timestamp = timestamp;
+		Data.ClientPing = ping;
+		Data.InputType = InputType;
+		Data.TargetControllerID = TargetID;
+		Data.PlayerInputID.Frame = ClientFrames;
+		Data.PlayerInputID.InstigatorControllerID = InstigatorID;
 		InputBuffer.Find(RealFrame)->Add(Data);
 	}
 	else

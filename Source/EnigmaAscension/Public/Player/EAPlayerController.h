@@ -87,7 +87,7 @@ public:
 	void StopSprint();
 
 	// Roll Back Net Code
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(BlueprintCallable,Server, Reliable)
 	void Server_CollectInputData(FPlayerInputData Data);
 	UFUNCTION(BlueprintCallable)
 	FPlayerInputData Client_CollectInputData(EEAAbilityInput InputType, int TargetControllerID);

@@ -182,7 +182,20 @@ void AEAPlayerController::StopSprint()
 
 void AEAPlayerController::Server_CollectInputData_Implementation(FPlayerInputData Data)
 {
-	Cast<AEAGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->AddInputToBuffer(Data);
+	int ClientFrames = Data.PlayerInputID.Frame;
+	int InstigatorID = Data.PlayerInputID.InstigatorControllerID;
+	EEAAbilityInput InputType = Data.InputType;
+	int TargetID = Data.TargetControllerID;
+	float timestamp = Data.Timestamp;
+	float ping = Data.ClientPing;
+	if(IsLocalController())
+	{
+		UE_LOG(LogPlayerController, Warning, TEXT("Server Call being run on client"));
+	}
+	else
+	{
+	Cast<AEAGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->AddInputToBuffer( ClientFrames,InstigatorID,InputType,TargetID, timestamp,ping);
+	}
 }
 
 FPlayerInputData AEAPlayerController::Client_CollectInputData(EEAAbilityInput InputType,int TargetControllerID)
@@ -230,7 +243,14 @@ void AEAPlayerController::Client_CreateHUD_Implementation()
 	if(IsLocalController()){
 		UE_LOG(LogTemp,Warning,TEXT("AEAPlayerController::Client_CreateHUD_Implementation Player HUD Created"));
 		PlayerHUD = CreateWidget<UPlayerHUD>(UGameplayStatics::GetPlayerController(GetWorld(),0),PlayerHUDClass);
+		if(IsValid(PlayerHUD))
+		{
 		PlayerHUD->AddToViewport();
+		}
+		else
+		{
+			UE_LOG(LogPlayerController, Error, TEXT("Player_HUD not valid"));
+		}
 	}
 }
 

@@ -25,5 +25,5 @@ public:
 	TMap<int,int> ClientStartFrame;
 	
 	// Adds Inputs to the InputBuffer
-	void AddInputToBuffer(FPlayerInputData Data);
+	void AddInputToBuffer(int ClientFrames, int InstigatorID, EEAAbilityInput InputType, int TargetID, float timestamp, float ping);
 };
