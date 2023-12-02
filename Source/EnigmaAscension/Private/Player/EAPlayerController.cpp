@@ -205,3 +205,26 @@ FPlayerInputData AEAPlayerController::Client_CollectInputData(EEAAbilityInput In
 	return PI_Data;
 }
 
+void AEAPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+	UE_LOG(LogTemp,Warning,TEXT("AEAPlayerController::OnPossess"));
+}
+
+void AEAPlayerController::Client_CreateHUD_Implementation()
+{
+	if(IsLocalController()){
+		UE_LOG(LogTemp,Warning,TEXT("AEAPlayerController::Client_CreateHUD_Implementation Player HUD Created"));
+		PlayerHUD = CreateWidget<UPlayerHUD>(UGameplayStatics::GetPlayerController(GetWorld(),0),PlayerHUDClass);
+		PlayerHUD->AddToViewport();
+	}
+}
+
+void AEAPlayerController::Client_UpdateHealthUI_Implementation(float NewHealth,float MaxHealth)
+{
+	if(IsValid(PlayerHUD)){
+		PlayerHUD->SetHealth(NewHealth,MaxHealth);
+	}
+	UE_LOG(LogGAS,Log,TEXT("AEACharacter::Client_UpdateHealthUI_Implementation - Updating Player UI New Health = %f, Max Health = %f"),
+		 NewHealth,MaxHealth);
+}

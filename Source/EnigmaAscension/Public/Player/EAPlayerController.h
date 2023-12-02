@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "EnigmaAscension/EnigmaAscension.h"
 #include "GameFramework/PlayerController.h"
+#include "UI/PlayerHUD.h"
 #include "EAPlayerController.generated.h"
 
 /**
@@ -57,6 +58,12 @@ public:
 	UPROPERTY()
 	APawn* PlayerPawn;
 
+	UPROPERTY(EditAnywhere,Category="UI|PlayerHUD")
+	TSubclassOf<UPlayerHUD> PlayerHUDClass;
+	UPROPERTY()
+	UPlayerHUD* PlayerHUD;
+
+	
 	UPROPERTY()
 	int StartFrame;
 	UPROPERTY()
@@ -84,6 +91,11 @@ public:
 	void Server_CollectInputData(FPlayerInputData Data);
 	UFUNCTION(BlueprintCallable)
 	FPlayerInputData Client_CollectInputData(EEAAbilityInput InputType, int TargetControllerID);
+	virtual void OnPossess(APawn* InPawn) override;
 
-	
+	UFUNCTION(Client,Reliable)
+	virtual void Client_UpdateHealthUI(float NewHealth,float MaxHealth);
+
+	UFUNCTION(Client,Reliable)
+	virtual void Client_CreateHUD();
 };

@@ -75,14 +75,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly,EditDefaultsOnly,Category="GAS|Defaults")
 	TArray<TSubclassOf<class UEAGameplayAbility>> DefaultAbilities;
 
-	UPROPERTY(EditAnywhere,Category="UI|PlayerHUD")
-	TSubclassOf<UPlayerHUD> PlayerHUDClass;
-	UPROPERTY()
-	UPlayerHUD* PlayerHUD;
-
-public:
-	 UPlayerHUD* GetPlayerHUD();
-
 protected:
 	void OnHealthChanged(const FOnAttributeChangeData& OnAttributeChangeData);
 	void HideCharacterOnDeath();
@@ -105,8 +97,8 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	virtual void SendGameplayEventFromHit(FGameplayTag EventTag,float AttackRadius);
-
 	
+
 
 	
 
