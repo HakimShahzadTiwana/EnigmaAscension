@@ -73,10 +73,12 @@ Plugins/*/Intermediate/*
 # Cache files for the editor to use
 DerivedDataCache/*
 
+# External Plugins
 # External Assets From Unreal Market Place
 Content/ParagonCountess/*
 Content/ParagonGreystone/*
 
-#External Plugins
-#Plugins/*
+# Developer Settings
+Plugins/Developer/*
+# For Difference in Source & Binary
 EnigmaAscension.uproject
