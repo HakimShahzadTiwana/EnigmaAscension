@@ -27,7 +27,6 @@ public:
 	AEACharacter();
 	
 protected:
-	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
@@ -77,8 +76,6 @@ protected:
 	TArray<TSubclassOf<class UEAGameplayAbility>> DefaultAbilities;
 
 protected:
-	void OnHealthChanged(const FOnAttributeChangeData& OnAttributeChangeData);
-	void HideCharacterOnDeath();
 	virtual void GiveDefaultAbilities();
 
 	
@@ -98,8 +95,11 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	virtual void SendGameplayEventFromHit(FGameplayTag EventTag,float AttackRadius);
-	
 
+	void OnHealthChanged(const FOnAttributeChangeData& OnAttributeChangeData);
+	void OnStaminaChanged(const FOnAttributeChangeData& OnAttributeChangeData);
+	void OnManaChanged(const FOnAttributeChangeData& OnAttributeChangeData);
+	void HideCharacterOnDeath();
 
 	
 

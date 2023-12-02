@@ -24,3 +24,14 @@ void UPlayerHUD::SetStamina(float CurrentStamina, float MaxStamina)
 		UE_LOG(LogTemp,Warning,TEXT("PlayerHUD: StaminaBar Is Not Valid"));
 	}
 }
+
+void UPlayerHUD::SetMana(float CurrentMana, float MaxMana)
+{
+	if(IsValid(ManaBar)){
+		ManaBar->SetPercent(CurrentMana/MaxMana);
+	}
+	else
+	{
+		UE_LOG(LogTemp,Warning,TEXT("PlayerHUD: ManaBar Is Not Valid"));
+	}
+}
