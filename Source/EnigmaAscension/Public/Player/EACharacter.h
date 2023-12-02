@@ -79,7 +79,11 @@ protected:
 	TSubclassOf<UPlayerHUD> PlayerHUDClass;
 	UPROPERTY()
 	UPlayerHUD* PlayerHUD;
-	
+
+public:
+	 UPlayerHUD* GetPlayerHUD();
+
+protected:
 	void OnHealthChanged(const FOnAttributeChangeData& OnAttributeChangeData);
 	void HideCharacterOnDeath();
 	virtual void GiveDefaultAbilities();
@@ -117,6 +121,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void PlayCharacterDeathMontage();
 	void SpawnCharacter();
+	
 };
 
 
