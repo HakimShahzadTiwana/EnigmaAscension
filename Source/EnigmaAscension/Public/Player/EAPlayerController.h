@@ -10,24 +10,36 @@
 /**
  * 
  */
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FInputID
 {
 	GENERATED_BODY()
+	UPROPERTY(BlueprintReadWrite)
 	int Frame;
 	// Owning Player Index
+	UPROPERTY(BlueprintReadWrite)
 	int InstigatorControllerID;
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FPlayerInputData
 {
 	GENERATED_BODY()
+	
+	UPROPERTY(BlueprintReadWrite)
 	FInputID PlayerInputID;
+	
+	UPROPERTY(BlueprintReadWrite)
 	EEAAbilityInput InputType;
+	
 	// Target Player Index
+	UPROPERTY(BlueprintReadWrite)
 	int TargetControllerID;
+	
+	UPROPERTY(BlueprintReadWrite)
 	float Timestamp;
+	
+	UPROPERTY(BlueprintReadWrite)
 	float ClientPing;
 };
 
@@ -39,14 +51,16 @@ class ENIGMAASCENSION_API AEAPlayerController : public APlayerController
 public:
 	AEAPlayerController();
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 	virtual void SetupInputComponent() override;
 	void BindGasInputs();
 	UPROPERTY()
 	APawn* PlayerPawn;
-	UPROPERTY()
-	int MyPlayerIndex; // TODO: Set this in Game Mode
+
 	UPROPERTY()
 	int StartFrame;
+	UPROPERTY()
+	int CurrentFrame = 0;
 	
 	UFUNCTION()
 	void MoveForward(float X);
@@ -67,8 +81,9 @@ public:
 
 	// Roll Back Net Code
 	UFUNCTION(Server, Reliable)
-	PlayerInputData Client_CollectInputData();
-	
+	void Server_CollectInputData(FPlayerInputData Data);
+	UFUNCTION(BlueprintCallable)
+	FPlayerInputData Client_CollectInputData(EEAAbilityInput InputType, int TargetControllerID);
 
 	
 };

@@ -38,6 +38,9 @@ void AEACharacter::BeginPlay()
 	Super::BeginPlay();
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEACharacter::OnHealthChanged);
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue,FString::Printf(TEXT("PrimaryAttackTag is : %s"),*PrimaryAttackTag.ToString()));
+	UE_LOG(LogTemp,Warning,TEXT("AEACharacter::Player HUD Created"));
+	PlayerHUD = CreateWidget<UPlayerHUD>(UGameplayStatics::GetPlayerController(GetWorld(),0),PlayerHUDClass);
+	PlayerHUD->AddToViewport();
 }
 
 // Called every frame
@@ -66,11 +69,11 @@ void AEACharacter::PossessedBy(AController* NewController)
 		//Only server should give the abilities
 		GiveDefaultAbilities();
 
-		if(IsLocallyControlled()){
-			UE_LOG(LogTemp,Warning,TEXT("AEACharacter::Player HUD Created"));
-			PlayerHUD = CreateWidget<UPlayerHUD>(UGameplayStatics::GetPlayerController(GetWorld(),0),PlayerHUDClass);
-			PlayerHUD->AddToViewport();
-		}
+		//if(IsLocallyControlled()){
+			// UE_LOG(LogTemp,Warning,TEXT("AEACharacter::Player HUD Created"));
+			// PlayerHUD = CreateWidget<UPlayerHUD>(UGameplayStatics::GetPlayerController(GetWorld(),0),PlayerHUDClass);
+			// PlayerHUD->AddToViewport();
+		//}
 	}
 	else
 	{

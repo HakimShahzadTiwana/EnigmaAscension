@@ -6,9 +6,12 @@
 #include "Abilities/GameplayAbilityTypes.h"
 #include "EnigmaAscension/EnigmaAscension.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/PlayerState.h"
 #include "GameplayAbilitySystem/EAAbilitySystemComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/EACharacter.h"
+#include "Player/EAPlayerState.h"
 
 AEAPlayerController::AEAPlayerController()
 {
@@ -21,6 +24,12 @@ void AEAPlayerController::BeginPlay()
 	PlayerPawn = GetPawn();
 	//Binding Gas Abilities here because InputComponent is called before begin play and Pawn is not valid there
 	BindGasInputs();
+}
+
+void AEAPlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	CurrentFrame++;
 }
 
 void AEAPlayerController::SetupInputComponent()
@@ -170,4 +179,29 @@ void AEAPlayerController::StopSprint()
 {
 }
 
+void AEAPlayerController::Server_CollectInputData_Implementation(FPlayerInputData Data)
+{
+}
+
+FPlayerInputData AEAPlayerController::Client_CollectInputData(EEAAbilityInput InputType,int TargetControllerID)
+{
+	
+	FInputID I_ID;
+
+	I_ID.Frame = CurrentFrame; 
+	I_ID.InstigatorControllerID = GetPlayerState<AEAPlayerState>()->MyPlayerIndex;
+
+	FPlayerInputData PI_Data;
+	
+	PI_Data.PlayerInputID = I_ID;
+	PI_Data.InputType = InputType; 
+	PI_Data.TargetControllerID = TargetControllerID;
+	
+	PI_Data.Timestamp = GetWorld()->GetUnpausedTimeSeconds();
+	PI_Data.ClientPing = UGameplayStatics::GetPlayerState(GetWorld(),0)->GetPingInMilliseconds();
+
+	Server_CollectInputData_Implementation(PI_Data);
+	
+	return PI_Data;
+}
 
