@@ -14,6 +14,7 @@
 #include "GameplayTagsManager.h"
 #include "Core/EAGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/EAPlayerController.h"
 
 // Sets default values
 AEACharacter::AEACharacter()
@@ -41,9 +42,6 @@ void AEACharacter::BeginPlay()
 	Super::BeginPlay();
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEACharacter::OnHealthChanged);
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue,FString::Printf(TEXT("PrimaryAttackTag is : %s"),*PrimaryAttackTag.ToString()));
-	UE_LOG(LogTemp,Warning,TEXT("AEACharacter::Player HUD Created"));
-	PlayerHUD = CreateWidget<UPlayerHUD>(UGameplayStatics::GetPlayerController(GetWorld(),0),PlayerHUDClass);
-	PlayerHUD->AddToViewport();
 }
 
 // Called every frame
@@ -71,12 +69,6 @@ void AEACharacter::PossessedBy(AController* NewController)
 		InitializeAttributes();
 		//Only server should give the abilities
 		GiveDefaultAbilities();
-
-		//if(IsLocallyControlled()){
-			// UE_LOG(LogTemp,Warning,TEXT("AEACharacter::Player HUD Created"));
-			// PlayerHUD = CreateWidget<UPlayerHUD>(UGameplayStatics::GetPlayerController(GetWorld(),0),PlayerHUDClass);
-			// PlayerHUD->AddToViewport();
-		//}
 	}
 	else
 	{
@@ -126,16 +118,15 @@ void AEACharacter::GiveAbilityToSelf(TSubclassOf<UEAGameplayAbility> Ability)
 	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Blue, FString::Printf(TEXT("Ability Given is : %s "),*AbilitySpec.GetDebugString()));
 }
 
-UPlayerHUD* AEACharacter::GetPlayerHUD()
-{
-	return PlayerHUD;
-}
-
 void AEACharacter::OnHealthChanged(const FOnAttributeChangeData& OnAttributeChangeData)
 {
+	UE_LOG(LogGAS,Log,TEXT("AEACharacter::OnHealthChanged"));
 	if(OnAttributeChangeData.NewValue<=0)
 	{
 		PlayCharacterDeathMontage();
+	}
+	if(AEAPlayerController* EA_Controller = Cast<AEAPlayerController>(GetController()); IsValid(Controller)){
+		EA_Controller->Client_UpdateHealthUI(OnAttributeChangeData.NewValue,AttributeSet->GetMaxHealth());
 	}
 }
 
