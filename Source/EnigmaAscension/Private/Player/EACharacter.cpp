@@ -3,6 +3,8 @@
 
 #include "EnigmaAscension/Public/Player/EACharacter.h"
 
+#include <Player/EAPlayerState.h>
+
 #include "AbilitySystemComponent.h"
 #include "EnigmaAscension/Public/GameplayAbilitySystem/EAAttributeSet.h"
 #include "EnigmaAscension/Public/GameplayAbilitySystem/EAGameplayAbility.h"
@@ -10,6 +12,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayTagsManager.h"
+#include "Core/EAGameMode.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -250,7 +253,15 @@ void AEACharacter::SendGameplayEventFromHit(FGameplayTag EventTag, float AttackR
 		EventData.Instigator = GetInstigator();
 		EventData.Target=OverlappedActors[0];
 		EventData.TargetData = TargetHandle;
+		AEAGameMode* GameMode = Cast<AEAGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		int* PlayerStartFrame = GameMode->ClientStartFrame.Find((Cast<AEAPlayerState>(GetPlayerState())->GetPlayerIndex()));
+		TArray<FPlayerInputData>* FrameInputs = GameMode->InputBuffer.Find(*PlayerStartFrame + CurrentInputID.Frame);
+		for( auto Inputs : *FrameInputs)
+		{
+			Inputs.TargetControllerID = Cast<AEAPlayerState>(Cast<AEACharacter>(OverlappedActors[0])->GetPlayerState())->GetPlayerIndex();
+		}
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetInstigator(),EventTag,EventData);
+		
 	}
 	else
 	{

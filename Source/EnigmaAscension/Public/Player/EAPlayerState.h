@@ -14,8 +14,9 @@ class ENIGMAASCENSION_API AEAPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY()
-	int MyPlayerIndex; // TODO: Set this in Game Mode
+	UPROPERTY(Replicated)
+	int MyPlayerIndex; 
 	UFUNCTION(BlueprintCallable)
 	int GetPlayerIndex() const;
+	
 };

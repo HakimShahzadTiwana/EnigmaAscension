@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "EAPlayerController.h"
 #include "GameplayEffectTypes.h"
 #include "GameplayTagContainer.h"
 #include "UI/PlayerHUD.h"
@@ -121,6 +122,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void PlayCharacterDeathMontage();
 	void SpawnCharacter();
+	UPROPERTY(BlueprintReadWrite)
+	FInputID CurrentInputID;
 	
 };
 
