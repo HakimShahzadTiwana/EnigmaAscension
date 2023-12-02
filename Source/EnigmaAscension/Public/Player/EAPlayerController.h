@@ -3,12 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EnigmaAscension/EnigmaAscension.h"
 #include "GameFramework/PlayerController.h"
 #include "EAPlayerController.generated.h"
 
 /**
  * 
  */
+struct InputID
+{
+	int Frame;
+	// Owning Player Index
+	int InstigatorControllerID;
+};
+
+struct PlayerInputData
+{
+	InputID PlayerInputID;
+	EEAAbilityInput InputType;
+	// Target Player Index
+	int TargetControllerID;
+	float Timestamp;
+	float ClientPing;
+};
+
 UCLASS()
 class ENIGMAASCENSION_API AEAPlayerController : public APlayerController
 {
