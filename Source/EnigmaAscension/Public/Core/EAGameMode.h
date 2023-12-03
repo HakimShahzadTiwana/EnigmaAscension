@@ -35,7 +35,8 @@ public:
 	
 	// The current frame that the server is on, updated every tick
 	int Server_FrameCount = 0;
-	
+
+	int RollbackPingThreshold = 5;
 	// Stores inputs of clients here, TArray because there is a possibility that multiple clients give inputs at the same frame
 	TArray<FPlayerInputData> InputBuffer;
 	
@@ -53,6 +54,9 @@ public:
 	
 	// Displays Contents of the Buffer Tail in Logs
 	void PrintBufferTail();
+
+	// Prints contents of whole buffer
+	void PrintBufferSnapShot();
 	
 };
 

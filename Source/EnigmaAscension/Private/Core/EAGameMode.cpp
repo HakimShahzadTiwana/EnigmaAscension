@@ -43,10 +43,22 @@ void AEAGameMode::AddInputToBuffer(const FPlayerInputData& Data)
 	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer"));
 	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer - Server Current Time is : %d"),ServerTimeInMs);
 	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer - Client Ping is : %d"), Data.ClientPing);
-	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer -Inserting Sent data to Index : %d"),InputBuffer.Num()-1-Data.ClientPing);
+	int RewindIndex = InputBuffer.Num()-1-Data.ClientPing;
+	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer -Inserting Sent data to Index : %d"),RewindIndex);
 	
-	InputBuffer[InputBuffer.Num()-1-Data.ClientPing] = Data;
-	PrintBufferTail();
+	InputBuffer[RewindIndex] = Data;
+
+	if(Data.ClientPing>RollbackPingThreshold)
+	{
+		for(int i = RewindIndex ; i<InputBuffer.Num();i++)
+		{
+			if(InputBuffer[i].TargetControllerID == Data.PlayerInputID.InstigatorControllerID)
+			{
+				UE_LOG(LogGameMode, Log, TEXT("Found Relevant Information at index %d"),i);
+			}
+		}
+	}
+	
 	
 }
 
@@ -85,6 +97,7 @@ void AEAGameMode::PrintBufferHead()
 			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferHead - Frame : %d"),Data.PlayerInputID.Frame);
 			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferHead - Player Ping : %d"), Data.ClientPing);
 			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferHead - TimeStamp : %f"), Data.Timestamp);
+			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferHead - Target Index : %d"), Data.TargetControllerID);
 			UE_LOG(LogGameMode, Log, TEXT("--------------------------------------------------"));
 		}
 	}
@@ -105,8 +118,25 @@ void AEAGameMode::PrintBufferTail()
 			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferTail - Frame : %d"),Data.PlayerInputID.Frame);
 			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferTail - Player Ping : %d"), Data.ClientPing);
 			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferTail - TimeStamp : %f"), Data.Timestamp);
+			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferTail - Target Index : %d"), Data.TargetControllerID);
 			UE_LOG(LogGameMode, Log, TEXT("--------------------------------------------------"));
 			
 		}
+	}
+}
+
+void AEAGameMode::PrintBufferSnapShot()
+{
+	for (int i=0 ; i< InputBuffer.Num() ; i++)
+	{
+		FPlayerInputData Data = InputBuffer[i];
+		UE_LOG(LogGameMode, Log, TEXT("--------------------------------------------------"));
+		UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferSnapshot - Player Controller ID : %d"),Data.PlayerInputID.InstigatorControllerID);
+		UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferSnapshot - Frame : %d"),Data.PlayerInputID.Frame);
+		UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferSnapshot - Player Ping : %d"), Data.ClientPing);
+		UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferSnapshot - TimeStamp : %f"), Data.Timestamp);
+		UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferSnapshot - Target Index : %d"), Data.TargetControllerID);
+		UE_LOG(LogGameMode, Log, TEXT("--------------------------------------------------"));
+			
 	}
 }

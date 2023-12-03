@@ -188,7 +188,7 @@ void AEAPlayerController::Server_CollectInputData_Implementation(FPlayerInputDat
 	int TargetID = Data.TargetControllerID;
 	float timestamp = Data.Timestamp;
 	float ping = Data.ClientPing;
-	if(IsLocalController())
+	if(IsLocalController() && Data.PlayerInputID.InstigatorControllerID!=0)
 	{
 		UE_LOG(LogPlayerController, Warning, TEXT("Server Call being run on client"));
 	}

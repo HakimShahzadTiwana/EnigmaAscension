@@ -267,8 +267,18 @@ void AEACharacter::SendGameplayEventFromHit(FGameplayTag EventTag, float AttackR
 		EventData.Target=OverlappedActors[0];
 		EventData.TargetData = TargetHandle;
 		
-		/* Pfft lol
-		// AEAGameMode* GameMode = Cast<AEAGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		
+		AEAGameMode* GameMode = Cast<AEAGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		int PlayerInd = Cast<AEAPlayerState>(GetPlayerState())->GetPlayerIndex();
+		UE_LOG(LogGAS, Log, TEXT("%hc PlayerIndex is : %d "),*__FUNCTION__,PlayerInd);
+		for (int i=0 ; i<GameMode->InputBuffer.Num();i++)
+		{
+			if (GameMode->InputBuffer[i].PlayerInputID.InstigatorControllerID == PlayerInd )
+			{
+				GameMode->InputBuffer[i].TargetControllerID = Cast<AEAPlayerState>(Cast<AEACharacter>(OverlappedActors[0])->GetPlayerState())->GetPlayerIndex();
+				GameMode->PrintBufferSnapShot();
+			}
+		}
 		// int* PlayerStartFrame = GameMode->ClientStartFrame.Find((Cast<AEAPlayerState>(GetPlayerState())->GetPlayerIndex()));
 		// TArray<FPlayerInputData>* FrameInputs = GameMode->InputBuffer.Find(*PlayerStartFrame + CurrentInputID.Frame);
 		// if(FrameInputs)
@@ -286,7 +296,7 @@ void AEACharacter::SendGameplayEventFromHit(FGameplayTag EventTag, float AttackR
 		// 	UE_LOG(LogCore, Warning, TEXT("Frame not found in buffer for frame %d, Server Frame is currently %d"),*PlayerStartFrame + CurrentInputID.Frame, GameMode->Server_FrameCount);
 		// 	
 		// }
-		*/
+		
 		
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetInstigator(),EventTag,EventData);
 	}
