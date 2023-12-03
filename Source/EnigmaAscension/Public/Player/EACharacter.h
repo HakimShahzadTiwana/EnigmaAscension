@@ -23,12 +23,10 @@ class ENIGMAASCENSION_API AEACharacter : public ACharacter,public IAbilitySystem
 	GENERATED_BODY()
 
 public:
-	// TODO : Add Comments!
 	// Sets default values for this character's properties
 	AEACharacter();
 	
 protected:
-	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
@@ -76,9 +74,8 @@ protected:
 	TArray<TSubclassOf<class UGameplayEffect>> DefaultAttributeEffects;
 	UPROPERTY(BlueprintReadOnly,EditDefaultsOnly,Category="GAS|Defaults")
 	TArray<TSubclassOf<class UEAGameplayAbility>> DefaultAbilities;
-	
-	void OnHealthChanged(const FOnAttributeChangeData& OnAttributeChangeData);
-	void HideCharacterOnDeath();
+
+protected:
 	virtual void GiveDefaultAbilities();
 
 	
@@ -98,13 +95,15 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	virtual void SendGameplayEventFromHit(FGameplayTag EventTag,float AttackRadius);
+
+	void OnHealthChanged(const FOnAttributeChangeData& OnAttributeChangeData);
+	void OnStaminaChanged(const FOnAttributeChangeData& OnAttributeChangeData);
+	void OnManaChanged(const FOnAttributeChangeData& OnAttributeChangeData);
+	void HideCharacterOnDeath();
+
 	
 
-
-	
-
-public:
-	
+public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	// Called to bind functionality to input

@@ -263,3 +263,21 @@ void AEAPlayerController::Client_UpdateHealthUI_Implementation(float NewHealth,f
 	UE_LOG(LogGAS,Log,TEXT("AEACharacter::Client_UpdateHealthUI_Implementation - Updating Player UI New Health = %f, Max Health = %f"),
 		 NewHealth,MaxHealth);
 }
+
+void AEAPlayerController::Client_UpdateStaminaUI_Implementation(float NewStamina, float MaxStamina)
+{
+	if(IsValid(PlayerHUD)){
+		PlayerHUD->SetStamina(NewStamina,MaxStamina);
+	}
+	UE_LOG(LogGAS,Log,TEXT("AEACharacter::Client_UpdateStaminaUI_Implementation - Updating Player UI New Stamina = %f, Max Stamina = %f"),
+		 NewStamina,MaxStamina);
+}
+
+void AEAPlayerController::Client_UpdateManaUI_Implementation(float NewMana, float MaxMana)
+{
+	if(IsValid(PlayerHUD)){
+		PlayerHUD->SetMana(NewMana,MaxMana);
+	}
+	UE_LOG(LogGAS,Log,TEXT("AEACharacter::Client_UpdateManaUI_Implementation - Updating Player UI New Mana = %f, Max Mana = %f"),
+		 NewMana,MaxMana);
+}

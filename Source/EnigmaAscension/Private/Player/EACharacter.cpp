@@ -42,6 +42,9 @@ void AEACharacter::BeginPlay()
 	Super::BeginPlay();
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEACharacter::OnHealthChanged);
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue,FString::Printf(TEXT("PrimaryAttackTag is : %s"),*PrimaryAttackTag.ToString()));
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetStaminaAttribute()).AddUObject(this, &AEACharacter::OnStaminaChanged);
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetManaAttribute()).AddUObject(this, &AEACharacter::OnManaChanged);
+
 }
 
 // Called every frame
@@ -128,6 +131,22 @@ void AEACharacter::OnHealthChanged(const FOnAttributeChangeData& OnAttributeChan
 	}
 	if(AEAPlayerController* EA_Controller = Cast<AEAPlayerController>(GetController()); IsValid(Controller)){
 		EA_Controller->Client_UpdateHealthUI(OnAttributeChangeData.NewValue,AttributeSet->GetMaxHealth());
+	}
+}
+
+void AEACharacter::OnStaminaChanged(const FOnAttributeChangeData& OnAttributeChangeData)
+{
+	UE_LOG(LogGAS,Log,TEXT("AEACharacter::OnStaminaChanged"));
+	if(AEAPlayerController* EA_Controller = Cast<AEAPlayerController>(GetController()); IsValid(Controller)){
+		EA_Controller->Client_UpdateStaminaUI(OnAttributeChangeData.NewValue,AttributeSet->GetMaxStamina());
+	}
+}
+
+void AEACharacter::OnManaChanged(const FOnAttributeChangeData& OnAttributeChangeData)
+{
+	UE_LOG(LogGAS,Log,TEXT("AEACharacter::OnManaChanged"));
+	if(AEAPlayerController* EA_Controller = Cast<AEAPlayerController>(GetController()); IsValid(Controller)){
+		EA_Controller->Client_UpdateManaUI(OnAttributeChangeData.NewValue,AttributeSet->GetMaxMana());
 	}
 }
 

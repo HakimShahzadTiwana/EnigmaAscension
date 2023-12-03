@@ -19,9 +19,13 @@ public:
 	UProgressBar* HealthBar;
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UProgressBar* StaminaBar;
-
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UProgressBar* ManaBar;
+	
 	UFUNCTION()
 	void SetHealth(float CurrentHealth, float MaxHealth);
 	UFUNCTION()
 	void SetStamina(float CurrentStamina, float MaxStamina);
+	UFUNCTION()
+	void SetMana(float CurrentMana, float MaxMana);
 };

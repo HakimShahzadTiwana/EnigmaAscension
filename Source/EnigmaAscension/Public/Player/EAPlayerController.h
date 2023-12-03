@@ -86,22 +86,20 @@ public:
 	UFUNCTION()
 	void StopSprint();
 
-	
-
-	// Sends the Data to the game mode to handle rollback
+	// Roll Back Net Code
 	UFUNCTION(BlueprintCallable,Server, Reliable)
 	void Server_CollectInputData(FPlayerInputData Data);
-
-	// Called for the client to collect input data to send to the server
 	UFUNCTION(BlueprintCallable)
 	FPlayerInputData Client_CollectInputData(EEAAbilityInput InputType, int TargetControllerID);
 	virtual void OnPossess(APawn* InPawn) override;
 
-
-
-	
 	UFUNCTION(Client,Reliable)
 	virtual void Client_UpdateHealthUI(float NewHealth,float MaxHealth);
+	UFUNCTION(Client,Reliable)
+	virtual void Client_UpdateStaminaUI(float NewStamina,float MaxStamina);
+	UFUNCTION(Client,Reliable)
+	virtual void Client_UpdateManaUI(float NewMana,float MaxMana);
+	
 	UFUNCTION(Client,Reliable)
 	virtual void Client_CreateHUD();
 };
