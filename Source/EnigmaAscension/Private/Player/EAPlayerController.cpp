@@ -225,8 +225,9 @@ FPlayerInputData AEAPlayerController::Client_CollectInputData(EEAAbilityInput In
 	PI_Data.Timestamp = GetWorld()->GetUnpausedTimeSeconds();
 	UE_LOG(LogPlayerController, Log, TEXT(" Timestamp is  : %f"),GetWorld()->GetUnpausedTimeSeconds())
 	
-	PI_Data.ClientPing = UGameplayStatics::GetPlayerState(GetWorld(),0)->GetPingInMilliseconds();
-	UE_LOG(LogPlayerController, Log, TEXT(" Client Ping is  : %f"),PI_Data.ClientPing)
+	
+	PI_Data.ClientPing = GetPlayerState<AEAPlayerState>()->GetCompressedPing()*4;
+	UE_LOG(LogPlayerController, Log, TEXT(" Client Ping is  : %d"),PI_Data.ClientPing)
 	
 	Server_CollectInputData_Implementation(PI_Data);
 	

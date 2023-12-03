@@ -16,10 +16,10 @@ struct FInputID
 {
 	GENERATED_BODY()
 	UPROPERTY(BlueprintReadWrite)
-	int Frame;
+	int Frame = -1 ;
 	// Owning Player Index
 	UPROPERTY(BlueprintReadWrite)
-	int InstigatorControllerID;
+	int InstigatorControllerID = -1;
 };
 
 USTRUCT(BlueprintType)
@@ -31,17 +31,17 @@ struct FPlayerInputData
 	FInputID PlayerInputID;
 	
 	UPROPERTY(BlueprintReadWrite)
-	EEAAbilityInput InputType;
+	EEAAbilityInput InputType = EEAAbilityInput::None;
 	
 	// Target Player Index
 	UPROPERTY(BlueprintReadWrite)
-	int TargetControllerID;
+	int TargetControllerID = -1 ;
 	
 	UPROPERTY(BlueprintReadWrite)
-	float Timestamp;
+	float Timestamp = -1 ;
 	
 	UPROPERTY(BlueprintReadWrite)
-	float ClientPing;
+	int ClientPing = -1 ;
 };
 
 UCLASS()

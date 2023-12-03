@@ -89,7 +89,8 @@ void AEACharacter::OnRep_PlayerState()
 		AbilitySystemComponent->InitAbilityActorInfo(this,this);
 		InitializeAttributes();
 
-		/* //Client needs to bind the inputs
+		/*
+		 * //Client needs to bind the inputs
 		// if(AbilitySystemComponent && InputComponent)
 		// {
 		// 	const FGameplayAbilityInputBinds Binds("Confirm","Cancel",FTopLevelAssetPath(GetPathNameSafe(UClass::TryFindTypeSlow<UEnum>("EEAAbilityInput"))),static_cast<int32>(EEAAbilityInput::Confirm),static_cast<int32>(EEAAbilityInput::Cancel));
@@ -99,7 +100,8 @@ void AEACharacter::OnRep_PlayerState()
 		// else
 		// {
 		// 	UE_LOG(LogGAS,Warning,TEXT("AEACharacter::OnRep_PlayerState - AbilitySystemComponent or InputComponent are null"));
-		// }*/
+		// }
+		*/
 	}
 	else
 	{

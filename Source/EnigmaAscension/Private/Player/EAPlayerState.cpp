@@ -5,6 +5,12 @@
 
 #include "Net/UnrealNetwork.h"
 
+
+AEAPlayerState::AEAPlayerState()
+{
+	SetShouldUpdateReplicatedPing(true);
+}
+
 int AEAPlayerState::GetPlayerIndex() const
 {
 	return MyPlayerIndex;

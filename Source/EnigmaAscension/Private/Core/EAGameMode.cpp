@@ -23,47 +23,90 @@ void AEAGameMode::OnPostLogin(AController* NewPlayer)
 	ClientStartFrame.Add(GetNumPlayers()-1,Server_FrameCount);
 }
 
+void AEAGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+	GetWorldTimerManager().SetTimer(ServerTime,this, &AEAGameMode::UpdateInputBuffer,0.1,true);
+}
+
 void AEAGameMode::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	// Keep track of the number of frames
 	Server_FrameCount++;
 	
-	// Add slots for each frame in the input buffer
-	InputBuffer.Add(Server_FrameCount);
 }
 
 void AEAGameMode::AddInputToBuffer(const FPlayerInputData& Data)
 {
 	// int ClientFrames, int InstigatorID, EEAAbilityInput InputType, int TargetID, float timestamp, float ping
 	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer"));
-	UE_LOG(LogGameMode, Log, TEXT("Server Frame Count was : %d"),Server_FrameCount);
-
-	// Get the server frame that the client joined on 
-	const int* ClientStart = ClientStartFrame.Find(Data.PlayerInputID.InstigatorControllerID);
-	UE_LOG(LogGameMode, Log, TEXT("Client Start is : %d"),*ClientStart);
-
-	// Add the client frame with the frame on the local machine (this might be wrong will have to confirm, but the FPS for all machines are kept at 30 rn)
-	const int RealFrame = *ClientStart + Data.PlayerInputID.Frame;
-	UE_LOG(LogGameMode, Log, TEXT("Real Frame is : %d"),RealFrame);
+	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer - Server Current Time is : %d"),ServerTimeInMs);
+	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer - Client Ping is : %d"), Data.ClientPing);
+	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer -Inserting Sent data to Index : %d"),InputBuffer.Num()-1-Data.ClientPing);
 	
+	InputBuffer[InputBuffer.Num()-1-Data.ClientPing] = Data;
+	PrintBufferTail();
 	
-	if(InputBuffer.Find(RealFrame))
+}
+
+void AEAGameMode::UpdateInputBuffer()
+{
+	ServerTimeInMs++;
+	FPlayerInputData Data;
+	
+	if(ServerTimeInMs%InputBufferLogSize==0 && bShowBufferContent)
 	{
-		/* FPlayerInputData Data;
-		// Data.Timestamp = timestamp;
-		// Data.ClientPing = ping;
-		// Data.InputType = InputType;
-		// Data.TargetControllerID = TargetID;
-		// Data.PlayerInputID.Frame = ClientFrames;
-		// Data.PlayerInputID.InstigatorControllerID = InstigatorID;*/
-		// Add Data send to the real frame that was calculated
-		InputBuffer.Find(RealFrame)->Add(Data);
+		PrintBufferHead();
+		PrintBufferTail();
+	}
+	if(InputBuffer.Num()<BufferSize)
+	{
+		InputBuffer.Add(Data);
 	}
 	else
 	{
-		UE_LOG(LogGameMode, Warning, TEXT("Real Frame is out of Bounds %d from %d"),RealFrame,InputBuffer.Num());
+		InputBuffer.RemoveAt(0);
+		InputBuffer.Add(Data);
+	}
+}
+
+void AEAGameMode::PrintBufferHead()
+{
+	if(InputBuffer.Num()>InputBufferLogSize)
+	{
+		UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferHead"));
+		UE_LOG(LogGameMode, Log, TEXT("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"));
+		for (int i=0 ; i< InputBufferLogSize ; i++)
+		{
+			FPlayerInputData Data = InputBuffer[i];
+			UE_LOG(LogGameMode, Log, TEXT("--------------------------------------------------"));
+			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferHead - Player Controller ID : %d"),Data.PlayerInputID.InstigatorControllerID);
+			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferHead - Frame : %d"),Data.PlayerInputID.Frame);
+			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferHead - Player Ping : %d"), Data.ClientPing);
+			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferHead - TimeStamp : %f"), Data.Timestamp);
+			UE_LOG(LogGameMode, Log, TEXT("--------------------------------------------------"));
+		}
 	}
 	
-	
+}
+
+void AEAGameMode::PrintBufferTail()
+{
+	if(InputBuffer.Num()>InputBufferLogSize)
+	{
+		UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferTail"));
+		UE_LOG(LogGameMode, Log, TEXT("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"));
+		for (int i=InputBuffer.Num()-InputBufferLogSize ; i< InputBuffer.Num() ; i++)
+		{
+			FPlayerInputData Data = InputBuffer[i];
+			UE_LOG(LogGameMode, Log, TEXT("--------------------------------------------------"));
+			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferTail - Player Controller ID : %d"),Data.PlayerInputID.InstigatorControllerID);
+			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferTail - Frame : %d"),Data.PlayerInputID.Frame);
+			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferTail - Player Ping : %d"), Data.ClientPing);
+			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferTail - TimeStamp : %f"), Data.Timestamp);
+			UE_LOG(LogGameMode, Log, TEXT("--------------------------------------------------"));
+			
+		}
+	}
 }
