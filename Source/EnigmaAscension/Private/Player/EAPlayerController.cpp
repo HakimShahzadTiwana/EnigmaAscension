@@ -194,7 +194,8 @@ void AEAPlayerController::Server_CollectInputData_Implementation(FPlayerInputDat
 	}
 	else
 	{
-	Cast<AEAGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->AddInputToBuffer( ClientFrames,InstigatorID,InputType,TargetID, timestamp,ping);
+		// ClientFrames,InstigatorID,InputType,TargetID, timestamp,ping
+	Cast<AEAGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->AddInputToBuffer(Data);
 	}
 }
 

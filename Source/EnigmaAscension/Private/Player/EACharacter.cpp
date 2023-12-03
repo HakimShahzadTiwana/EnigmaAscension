@@ -54,6 +54,7 @@ void AEACharacter::Tick(float DeltaTime)
 // Called to bind functionality to input
 void AEACharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+	// TODO : Moved to player controller so remove this 
 	// UE_LOG(LogGAS,Log,TEXT("AEACharacter::SetupPlayerInputComponent()"));
 	// Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
@@ -85,7 +86,7 @@ void AEACharacter::OnRep_PlayerState()
 		AbilitySystemComponent->InitAbilityActorInfo(this,this);
 		InitializeAttributes();
 
-		// //Client needs to bind the inputs
+		/* //Client needs to bind the inputs
 		// if(AbilitySystemComponent && InputComponent)
 		// {
 		// 	const FGameplayAbilityInputBinds Binds("Confirm","Cancel",FTopLevelAssetPath(GetPathNameSafe(UClass::TryFindTypeSlow<UEnum>("EEAAbilityInput"))),static_cast<int32>(EEAAbilityInput::Confirm),static_cast<int32>(EEAAbilityInput::Cancel));
@@ -95,7 +96,7 @@ void AEACharacter::OnRep_PlayerState()
 		// else
 		// {
 		// 	UE_LOG(LogGAS,Warning,TEXT("AEACharacter::OnRep_PlayerState - AbilitySystemComponent or InputComponent are null"));
-		// }
+		// }*/
 	}
 	else
 	{
@@ -244,6 +245,8 @@ void AEACharacter::SendGameplayEventFromHit(FGameplayTag EventTag, float AttackR
 		EventData.Instigator = GetInstigator();
 		EventData.Target=OverlappedActors[0];
 		EventData.TargetData = TargetHandle;
+		
+		/* Pfft lol
 		// AEAGameMode* GameMode = Cast<AEAGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		// int* PlayerStartFrame = GameMode->ClientStartFrame.Find((Cast<AEAPlayerState>(GetPlayerState())->GetPlayerIndex()));
 		// TArray<FPlayerInputData>* FrameInputs = GameMode->InputBuffer.Find(*PlayerStartFrame + CurrentInputID.Frame);
@@ -262,6 +265,8 @@ void AEACharacter::SendGameplayEventFromHit(FGameplayTag EventTag, float AttackR
 		// 	UE_LOG(LogCore, Warning, TEXT("Frame not found in buffer for frame %d, Server Frame is currently %d"),*PlayerStartFrame + CurrentInputID.Frame, GameMode->Server_FrameCount);
 		// 	
 		// }
+		*/
+		
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetInstigator(),EventTag,EventData);
 	}
 	else

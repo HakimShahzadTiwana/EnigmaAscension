@@ -18,12 +18,18 @@ class ENIGMAASCENSION_API AEAGameMode : public AGameModeBase
 public:
 	// Initialize values that are to be saved to players here
 	virtual void OnPostLogin(AController* NewPlayer) override;
+	
 	virtual void Tick(float DeltaSeconds) override;
+
+	// The current frame that the server is on, updated every tick
 	int Server_FrameCount = 0;
-	// Stores inputs of clients here
+	
+	// Stores inputs of clients here, TArray because there is a possibility that multiple clients give inputs at the same frame
 	TMap<int,TArray<FPlayerInputData>> InputBuffer;
+	
+	// Stores the frame the server was on when the client joined the match
 	TMap<int,int> ClientStartFrame;
 	
 	// Adds Inputs to the InputBuffer
-	void AddInputToBuffer(int ClientFrames, int InstigatorID, EEAAbilityInput InputType, int TargetID, float timestamp, float ping);
+	void AddInputToBuffer(const FPlayerInputData& Data);
 };
