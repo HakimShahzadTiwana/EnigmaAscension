@@ -27,6 +27,7 @@ void AEAGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	GetWorldTimerManager().SetTimer(ServerTime,this, &AEAGameMode::UpdateInputBuffer,0.1,true);
+	// OnTargetFound.AddDynamic(this,&AEAGameMode::Rollback);
 }
 
 void AEAGameMode::Tick(float DeltaSeconds)
@@ -43,20 +44,33 @@ void AEAGameMode::AddInputToBuffer(const FPlayerInputData& Data)
 	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer"));
 	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer - Server Current Time is : %d"),ServerTimeInMs);
 	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer - Client Ping is : %d"), Data.ClientPing);
-	int RewindIndex = InputBuffer.Num()-1-Data.ClientPing;
+	int RewindIndex = InputBuffer.Num()-1-(Data.ClientPing/2);
 	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer -Inserting Sent data to Index : %d"),RewindIndex);
 	
 	InputBuffer[RewindIndex] = Data;
 
 	if(Data.ClientPing>RollbackPingThreshold)
 	{
+		// For inputs in the (Rewind time to Current time) window
 		for(int i = RewindIndex ; i<InputBuffer.Num();i++)
 		{
+			// If the existing inputs were targeted at this instigator then count that as relevant information for rollback
 			if(InputBuffer[i].TargetControllerID == Data.PlayerInputID.InstigatorControllerID)
 			{
 				UE_LOG(LogGameMode, Log, TEXT("Found Relevant Information at index %d"),i);
+				// Store the relevant information in a TMap that contains arrays of relevant inputs for each player controller
+				RelevantInputs.FindOrAdd(Data.PlayerInputID.InstigatorControllerID).Add(InputBuffer[i]);
+				
+				
+				// Once the relevant controllers are found we have to wait for the server to check what the target
+				// of the attack was. So lets just store relevant information in an array then wait for the target.
+				// Once the target is found from the logic in the character class, we can then call a delegate to check
+				// if the instigator id's of the relevant information match the id's of the current attacker.
+				// if they do, we have found where we exactly have to rollback. We will revert any damage that the
+				// instigator did to the current player.
 			}
 		}
+		
 	}
 	
 	
@@ -138,5 +152,27 @@ void AEAGameMode::PrintBufferSnapShot()
 		UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferSnapshot - Target Index : %d"), Data.TargetControllerID);
 		UE_LOG(LogGameMode, Log, TEXT("--------------------------------------------------"));
 			
+	}
+}
+
+void AEAGameMode::Rollback(int InstigatorID, int TargetID)
+{
+	UE_LOG(LogGameMode, Log, TEXT("Target was found, going to rollback based on relevant inputs."));
+	// Find the array that contains relevant information for the instigator
+	// This relevant information is basically the other players that had targeted the instigator
+	if(TArray<FPlayerInputData> *Temp = RelevantInputs.Find(InstigatorID))
+	{
+		// Iterate through the array and find out the target player had sent an input for attacking the instigator
+		for (auto It = Temp->CreateIterator(); It;++It)
+		{
+			if(It->PlayerInputID.InstigatorControllerID == TargetID)
+			{
+				UE_LOG(LogGameMode, Log, TEXT("Point of rollback found at index %d, for player controller id %d"), It.GetIndex(),InstigatorID);
+			}
+		}
+	}
+	else
+	{
+		UE_LOG(LogGameMode, Log, TEXT("No relevant inputs were found for instigator with id : %d"),InstigatorID);
 	}
 }

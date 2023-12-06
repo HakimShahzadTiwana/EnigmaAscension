@@ -275,8 +275,10 @@ void AEACharacter::SendGameplayEventFromHit(FGameplayTag EventTag, float AttackR
 		{
 			if (GameMode->InputBuffer[i].PlayerInputID.InstigatorControllerID == PlayerInd )
 			{
-				GameMode->InputBuffer[i].TargetControllerID = Cast<AEAPlayerState>(Cast<AEACharacter>(OverlappedActors[0])->GetPlayerState())->GetPlayerIndex();
-				GameMode->PrintBufferSnapShot();
+				int TargetInd = Cast<AEAPlayerState>(Cast<AEACharacter>(OverlappedActors[0])->GetPlayerState())->GetPlayerIndex();
+				GameMode->InputBuffer[i].TargetControllerID = TargetInd;
+				GameMode->Rollback(PlayerInd,TargetInd);
+				// GameMode->PrintBufferSnapShot();
 			}
 		}
 		// int* PlayerStartFrame = GameMode->ClientStartFrame.Find((Cast<AEAPlayerState>(GetPlayerState())->GetPlayerIndex()));

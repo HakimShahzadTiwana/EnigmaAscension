@@ -10,6 +10,7 @@
 /**
  * 
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackTargetFound);
 UCLASS()
 class ENIGMAASCENSION_API AEAGameMode : public AGameModeBase
 {
@@ -21,6 +22,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
+	// FOnAttackTargetFound OnTargetFound;
 	FTimerHandle ServerTime;
 
 	UPROPERTY(EditAnywhere, Category = "Logs")
@@ -39,7 +41,8 @@ public:
 	int RollbackPingThreshold = 5;
 	// Stores inputs of clients here, TArray because there is a possibility that multiple clients give inputs at the same frame
 	TArray<FPlayerInputData> InputBuffer;
-	
+
+	TMap<int,TArray<FPlayerInputData>> RelevantInputs;
 	// Stores the frame the server was on when the client joined the match
 	TMap<int,int> ClientStartFrame;
 	
@@ -57,7 +60,8 @@ public:
 
 	// Prints contents of whole buffer
 	void PrintBufferSnapShot();
-	
+
+	void Rollback(int InstigatorID, int TargetID);
 };
 
 /*
