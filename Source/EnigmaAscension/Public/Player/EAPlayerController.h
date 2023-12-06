@@ -57,7 +57,10 @@ public:
 	void BindGasInputs();
 	UPROPERTY()
 	APawn* PlayerPawn;
+	UPROPERTY(Replicated)
+	bool bIsTeamA;
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	UPROPERTY(EditAnywhere,Category="UI|PlayerHUD")
 	TSubclassOf<UPlayerHUD> PlayerHUDClass;
 	UPROPERTY()
@@ -89,6 +92,8 @@ public:
 	// Roll Back Net Code
 	UFUNCTION(BlueprintCallable,Server, Reliable)
 	void Server_CollectInputData(FPlayerInputData Data);
+	UFUNCTION(BlueprintCallable,Client, Reliable)
+	void Client_UpdateTeamUI(const TArray<FString>& PlayerNames , const TArray<bool>& PlayerTeams);
 	UFUNCTION(BlueprintCallable)
 	FPlayerInputData Client_CollectInputData(EEAAbilityInput InputType, int TargetControllerID);
 	virtual void OnPossess(APawn* InPawn) override;

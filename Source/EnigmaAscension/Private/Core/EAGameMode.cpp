@@ -5,6 +5,7 @@
 
 #include <Player/EAPlayerState.h>
 
+#include "Core/EAGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/EACharacter.h"
 
@@ -12,10 +13,30 @@ void AEAGameMode::OnPostLogin(AController* NewPlayer)
 {
 	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::OnPostLogin"));
 	Super::OnPostLogin(NewPlayer);
-	// UI
-	Cast<AEAPlayerController>(NewPlayer)->Client_CreateHUD();
+	
+	AEAPlayerController* EA_Controller  = Cast<AEAPlayerController>(NewPlayer);
+	if(!IsValid(EA_Controller)){
+		UE_LOG(LogGameMode, Error, TEXT("AEAGameMode::OnPostLogin Cast To AEAPlayerController Failed"));
+	}
 
-	// Tell the player state the index of its controller
+	bool AssignedTeam =  ((GetNumPlayers()-1) % 2 == 0) ? true : false;
+	
+	ConnectedPlayerNames.Add(FString::Printf(TEXT("Player %d"),GetNumPlayers()));
+	ConnectedPlayerTeams.Add(AssignedTeam);
+	
+	// Set Player Team
+	EA_Controller->bIsTeamA = AssignedTeam;
+	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::OnPostLogin Player Index %d is Team %d"),(GetNumPlayers()-1),EA_Controller->bIsTeamA);
+	// Create Client UI - RPC Call
+	EA_Controller->Client_CreateHUD();
+	
+	// Update Lobby UI
+	UEAGameInstance* GameInstance = Cast<UEAGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	for (int i = 0; i < GetNumPlayers(); i++){
+		Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),i))->
+		Client_UpdateTeamUI(ConnectedPlayerNames,ConnectedPlayerTeams);
+	}
+	// // Tell the player state the index of its controller
 	Cast<AEAPlayerState>(Cast<AEAPlayerController>(NewPlayer)->PlayerState)->MyPlayerIndex = GetNumPlayers()-1;
 	UE_LOG(LogGameMode, Log, TEXT("SetPlayer Index to %d"),GetNumPlayers()-1);
 

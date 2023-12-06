@@ -11,6 +11,7 @@
 #include "GameplayAbilitySystem/EAAbilitySystemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Net/UnrealNetwork.h"
 #include "Player/EACharacter.h"
 #include "Player/EAPlayerState.h"
 
@@ -86,6 +87,12 @@ void AEAPlayerController::BindGasInputs()
 		UE_LOG(LogPlayerController, Warning, TEXT("AEAPlayerController::BindGasInputs - PlayerPawn is not valid"));
 	}
 	
+}
+
+void AEAPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AEAPlayerController, bIsTeamA);
 }
 
 void AEAPlayerController::MoveForward(float X)
@@ -199,6 +206,11 @@ void AEAPlayerController::Server_CollectInputData_Implementation(FPlayerInputDat
 	}
 }
 
+void AEAPlayerController::Client_UpdateTeamUI_Implementation(const TArray<FString>& PlayerNames , const TArray<bool>& PlayerTeams)
+{
+	PlayerHUD->AddPlayer_LobbyInfo(PlayerNames,PlayerTeams);
+}
+
 FPlayerInputData AEAPlayerController::Client_CollectInputData(EEAAbilityInput InputType,int TargetControllerID)
 {
 	UE_LOG(LogPlayerController, Log, TEXT("Client_CollectInputData"));
@@ -247,7 +259,7 @@ void AEAPlayerController::Client_CreateHUD_Implementation()
 		PlayerHUD = CreateWidget<UPlayerHUD>(UGameplayStatics::GetPlayerController(GetWorld(),0),PlayerHUDClass);
 		if(IsValid(PlayerHUD))
 		{
-		PlayerHUD->AddToViewport();
+			PlayerHUD->AddToViewport();
 		}
 		else
 		{

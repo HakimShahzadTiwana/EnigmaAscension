@@ -46,6 +46,10 @@ public:
 	int Server_FrameCount = 0;
 
 	int RollbackPingThreshold = 5;
+	
+	TArray<FString> ConnectedPlayerNames;
+	TArray<bool> ConnectedPlayerTeams;
+	
 	// Stores inputs of clients here, TArray because there is a possibility that multiple clients give inputs at the same frame
 	TArray<FPlayerInputData> InputBuffer;
 

@@ -19,7 +19,8 @@ class ENIGMAASCENSION_API UEAGameInstance : public UGameInstance, public IEASess
 	GENERATED_BODY()
 public:
 	UEAGameInstance();
-	
+	UPROPERTY(BlueprintReadWrite)
+	FString PlayerName;
 	//const FName EA_SESSION_NAME = "EA_Game_Session";
 	//const FName EA_SESSION_MAIN_FILTER_KEY = "EA_Session";
 	//const FString EA_SESSION_MAIN_FILTER_VALUE = "EA_Simple_Session";
