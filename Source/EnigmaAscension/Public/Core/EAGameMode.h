@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayEffect.h"
 #include "GameFramework/GameModeBase.h"
 #include "Player/EAPlayerController.h"
 #include "EAGameMode.generated.h"
@@ -22,6 +23,12 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGameplayEffect> Heal;
+	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGameplayEffect> Damage;
+	
 	// FOnAttackTargetFound OnTargetFound;
 	FTimerHandle ServerTime;
 

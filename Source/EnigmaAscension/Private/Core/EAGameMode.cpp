@@ -6,6 +6,7 @@
 #include <Player/EAPlayerState.h>
 
 #include "Kismet/GameplayStatics.h"
+#include "Player/EACharacter.h"
 
 void AEAGameMode::OnPostLogin(AController* NewPlayer)
 {
@@ -168,6 +169,11 @@ void AEAGameMode::Rollback(int InstigatorID, int TargetID)
 			if(It->PlayerInputID.InstigatorControllerID == TargetID)
 			{
 				UE_LOG(LogGameMode, Log, TEXT("Point of rollback found at index %d, for player controller id %d"), It.GetIndex(),InstigatorID);
+				if(It->InputType == EEAAbilityInput::PrimaryAttack)
+				{
+					Cast<AEACharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),InstigatorID))->ApplyEffectToSelf(Heal);
+					// Cast<AEACharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),TargetID))->ApplyEffectToSelf(Damage);
+				}
 			}
 		}
 	}
