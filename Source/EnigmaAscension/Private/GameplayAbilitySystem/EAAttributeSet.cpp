@@ -77,6 +77,7 @@ void UEAAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth)
 	// 		Owner->GetPlayerHUD()->SetHealth(Health.GetCurrentValue(),MaxHealth.GetCurrentValue());
 	// 	}
 	// }
+	
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UEAAttributeSet,Health,OldHealth); 
 }
 

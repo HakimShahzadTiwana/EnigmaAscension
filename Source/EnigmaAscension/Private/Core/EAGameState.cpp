@@ -14,9 +14,24 @@ void AEAGameState::OnRep_GameStarted()
 }
 
 
-void AEAGameState::IncrementTeamScore(bool bIsTeamA)
+void AEAGameState::Server_IncrementTeamScore_Implementation(bool bIsTeamA)
 {
-	bIsTeamA ? ScoreTeamB++ : ScoreTeamA++;
+	  
+	if(bIsTeamA)
+	{
+		ScoreTeamB++;
+		if(GIsServer)
+		{
+			Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0))->PlayerHUD->UpdateTeamScore(false,ScoreTeamB);
+			//OnRep_ScoreTeamB();
+		}
+	}
+	else
+	{
+		ScoreTeamA++;
+		Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0))->PlayerHUD->UpdateTeamScore(true,ScoreTeamA);
+		//OnRep_ScoreTeamA();
+	}
 }
 
 

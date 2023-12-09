@@ -28,7 +28,8 @@ public:
 	UFUNCTION()
 	virtual void OnRep_ScoreTeamB();
 
-	void IncrementTeamScore(bool bIsTeamA);
+	UFUNCTION(Server,Reliable)
+	void Server_IncrementTeamScore(bool bIsTeamA);
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	

@@ -11,6 +11,7 @@
 #include "GameplayAbilitySystem/EAAbilitySystemComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "GameplayEffectExtension.h"
 #include "GameplayTagsManager.h"
 #include "Core/EAGameMode.h"
 #include "Core/EAGameState.h"
@@ -130,9 +131,23 @@ void AEACharacter::OnHealthChanged(const FOnAttributeChangeData& OnAttributeChan
 	UE_LOG(LogGAS,Log,TEXT("AEACharacter::OnHealthChanged"));
 	if(OnAttributeChangeData.NewValue<=0)
 	{
-		bool MyTeam = Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0))->bIsTeamA;
-		AEAGameState* GameState = Cast<AEAGameState>(UGameplayStatics::GetGameState(GetWorld()));
-		GameState->IncrementTeamScore(MyTeam);
+		if(GIsServer)
+		{
+			if(OnAttributeChangeData.GEModData)
+			{
+				AEACharacter* TargetChar = Cast<AEACharacter>(OnAttributeChangeData.GEModData->Target.GetOwnerActor());
+				if(IsValid(TargetChar))
+				{
+					bool MyTeam= Cast<AEAPlayerState>(TargetChar->GetPlayerState())->bIsTeamA;
+					AEAGameState* GameState = Cast<AEAGameState>(UGameplayStatics::GetGameState(GetWorld()));
+					GameState->Server_IncrementTeamScore(MyTeam);
+				}
+				else
+				{
+					UE_LOG(LogGAS, Warning, TEXT("Cast To targetChar failed"));
+				}
+			}
+		}
 		PlayCharacterDeathMontage();
 	}
 	if(AEAPlayerController* EA_Controller = Cast<AEAPlayerController>(GetController()); IsValid(Controller)){

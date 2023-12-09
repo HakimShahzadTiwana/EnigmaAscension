@@ -26,6 +26,7 @@ void AEAGameMode::OnPostLogin(AController* NewPlayer)
 	
 	// Set Player Team
 	EA_Controller->bIsTeamA = AssignedTeam;
+	EA_Controller->GetPlayerState<AEAPlayerState>()->bIsTeamA = AssignedTeam;
 	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::OnPostLogin Player Index %d is Team %d"),(GetNumPlayers()-1),EA_Controller->bIsTeamA);
 	// Create Client UI - RPC Call
 	EA_Controller->Client_CreateHUD();

@@ -22,4 +22,5 @@ void AEAPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AEAPlayerState, MyPlayerIndex);
+	DOREPLIFETIME(AEAPlayerState, bIsTeamA);
 }

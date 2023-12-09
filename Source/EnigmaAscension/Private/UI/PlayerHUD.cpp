@@ -94,9 +94,14 @@ void UPlayerHUD::HostStartGame()
 
 void UPlayerHUD::UpdateTeamScore(bool bIsTeamA, int Score)
 {
-	bIsTeamA ?
-		TeamA_Score->SetText(FText::FromString(FString::FromInt(Score)))
-	:
+	if(bIsTeamA)
+	{
+		TeamA_Score->SetText(FText::FromString(FString::FromInt(Score)));
+		
+	}
+	else
+	{
 		TeamB_Score->SetText(FText::FromString(FString::FromInt(Score)));
+	}
 
 }

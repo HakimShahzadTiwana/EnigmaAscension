@@ -18,7 +18,9 @@ public:
 	AEAPlayerState();
 	
 	UPROPERTY(Replicated)
-	int MyPlayerIndex; // TODO: Set this in Game Mode
+	int MyPlayerIndex;
+	UPROPERTY(Replicated)// TODO: Set this in Game Mode
+	bool bIsTeamA;
 	UFUNCTION(BlueprintCallable)
 	int GetPlayerIndex() const;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
