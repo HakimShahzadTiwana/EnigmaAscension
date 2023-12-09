@@ -45,6 +45,12 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UProgressBar* ManaBar;
 
+	// Game Rules
+	UPROPERTY(EditAnywhere,meta=(BindWidget))
+	UTextBlock* TeamA_Score;
+	UPROPERTY(EditAnywhere,meta=(BindWidget))
+	UTextBlock* TeamB_Score;
+	
 	bool bIsLobbyListUpdated = false;
 	UFUNCTION()
 	void SetHealth(float CurrentHealth, float MaxHealth);
@@ -58,4 +64,10 @@ public:
 	void SetVisibility_Canvas_Lobby(ESlateVisibility Visible);
 	UFUNCTION()
 	void AddPlayer_LobbyInfo(TArray<FString> PlayerNames , TArray<bool> PlayerTeams);
+	UFUNCTION()
+	void HostStartGame();
+	UFUNCTION()
+	void UpdateTeamScore(bool bIsTeamA, int Score);
+	
+	
 };

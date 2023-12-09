@@ -252,6 +252,7 @@ void AEAPlayerController::OnPossess(APawn* InPawn)
 	UE_LOG(LogTemp,Warning,TEXT("AEAPlayerController::OnPossess"));
 }
 
+
 void AEAPlayerController::Client_CreateHUD_Implementation()
 {
 	if(IsLocalController()){

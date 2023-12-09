@@ -85,3 +85,18 @@ void UPlayerHUD::AddPlayer_LobbyInfo(TArray<FString> PlayerNames , TArray<bool> 
 
 	
 }
+
+void UPlayerHUD::HostStartGame()
+{
+	Canvas_InGame->SetVisibility(ESlateVisibility::Visible);
+	Canvas_Lobby->SetVisibility(ESlateVisibility::Collapsed);
+}
+
+void UPlayerHUD::UpdateTeamScore(bool bIsTeamA, int Score)
+{
+	bIsTeamA ?
+		TeamA_Score->SetText(FText::FromString(FString::FromInt(Score)))
+	:
+		TeamB_Score->SetText(FText::FromString(FString::FromInt(Score)));
+
+}

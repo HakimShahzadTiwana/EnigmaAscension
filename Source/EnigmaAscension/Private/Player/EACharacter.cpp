@@ -13,6 +13,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayTagsManager.h"
 #include "Core/EAGameMode.h"
+#include "Core/EAGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/EAPlayerController.h"
 
@@ -129,6 +130,9 @@ void AEACharacter::OnHealthChanged(const FOnAttributeChangeData& OnAttributeChan
 	UE_LOG(LogGAS,Log,TEXT("AEACharacter::OnHealthChanged"));
 	if(OnAttributeChangeData.NewValue<=0)
 	{
+		bool MyTeam = Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0))->bIsTeamA;
+		AEAGameState* GameState = Cast<AEAGameState>(UGameplayStatics::GetGameState(GetWorld()));
+		GameState->IncrementTeamScore(MyTeam);
 		PlayCharacterDeathMontage();
 	}
 	if(AEAPlayerController* EA_Controller = Cast<AEAPlayerController>(GetController()); IsValid(Controller)){

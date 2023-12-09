@@ -3,7 +3,9 @@
 
 #include "Player/EAPlayerState.h"
 
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "Player/EAPlayerController.h"
 
 
 AEAPlayerState::AEAPlayerState()
