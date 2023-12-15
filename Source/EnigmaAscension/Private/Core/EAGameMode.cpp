@@ -84,7 +84,6 @@ void AEAGameMode::AddInputToBuffer(const FPlayerInputData& Data)
 				// Store the relevant information in a TMap that contains arrays of relevant inputs for each player controller
 				RelevantInputs.FindOrAdd(Data.PlayerInputID.InstigatorControllerID).Add(InputBuffer[i]);
 				
-				
 				// Once the relevant controllers are found we have to wait for the server to check what the target
 				// of the attack was. So lets just store relevant information in an array then wait for the target.
 				// Once the target is found from the logic in the character class, we can then call a delegate to check
@@ -103,7 +102,8 @@ void AEAGameMode::UpdateInputBuffer()
 {
 	ServerTimeInMs++;
 	FPlayerInputData Data;
-	
+
+	// Check to see if we want to print buffer on update
 	if(ServerTimeInMs%InputBufferLogSize==0 && bShowBufferContent)
 	{
 		PrintBufferHead();
