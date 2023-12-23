@@ -66,7 +66,7 @@ public:
 	void AddPlayer_LobbyInfo(TArray<FString> PlayerNames , TArray<bool> PlayerTeams);
 	UFUNCTION()
 	void HostStartGame();
-	UFUNCTION()
+	UFUNCTION(Client,Reliable)
 	void UpdateTeamScore(bool bIsTeamA, int Score);
 	
 	

@@ -31,7 +31,8 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
-
+	virtual void NotifyControllerChanged() override;
+	
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="GAS|Abilities|Tags")
 	FGameplayTag PrimaryAttackTag;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="GAS|Abilities|Tags")
@@ -77,7 +78,6 @@ protected:
 
 protected:
 	virtual void GiveDefaultAbilities();
-
 	
 	virtual void InitializeAttributes();
 

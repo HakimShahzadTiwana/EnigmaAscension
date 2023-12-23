@@ -86,10 +86,10 @@ void AEACharacter::OnRep_PlayerState()
 {
 	UE_LOG(LogGAS,Log,TEXT("AEACharacter::OnRep_PlayerState()"));
 	Super::OnRep_PlayerState();
-	if(IsValid(AbilitySystemComponent) && IsValid(AttributeSet))
-	{
-		AbilitySystemComponent->InitAbilityActorInfo(this,this);
-		InitializeAttributes();
+	// if(IsValid(AbilitySystemComponent) && IsValid(AttributeSet))
+	// {
+	// 	AbilitySystemComponent->InitAbilityActorInfo(this,this);
+	// 	InitializeAttributes();
 
 		/*
 		 * //Client needs to bind the inputs
@@ -104,10 +104,27 @@ void AEACharacter::OnRep_PlayerState()
 		// 	UE_LOG(LogGAS,Warning,TEXT("AEACharacter::OnRep_PlayerState - AbilitySystemComponent or InputComponent are null"));
 		// }
 		*/
-	}
-	else
+	// }
+	// else
+	// {
+	// 	UE_LOG(LogGAS,Warning,TEXT("AEACharacter::OnRep_PlayerState - AbilitySystemComponent or AttributeSet are null"));
+	// }
+}
+
+void AEACharacter::NotifyControllerChanged()
+{
+	Super::NotifyControllerChanged();
+	if(IsValid(AbilitySystemComponent) && IsValid(GetController()))
 	{
-		UE_LOG(LogGAS,Warning,TEXT("AEACharacter::OnRep_PlayerState - AbilitySystemComponent or AttributeSet are null"));
+		AbilitySystemComponent->InitAbilityActorInfo(this,this);
+		InitializeAttributes();
+
+		if(AEAPlayerController* EAController = Cast<AEAPlayerController>(GetController()))
+		{
+			EAController->PlayerPawn = this;
+			EAController->BindGasInputs();
+		}
+	
 	}
 }
 
@@ -140,6 +157,7 @@ void AEACharacter::OnHealthChanged(const FOnAttributeChangeData& OnAttributeChan
 				{
 					bool MyTeam= Cast<AEAPlayerState>(TargetChar->GetPlayerState())->bIsTeamA;
 					AEAGameState* GameState = Cast<AEAGameState>(UGameplayStatics::GetGameState(GetWorld()));
+					UE_LOG(LogGameMode, Log, TEXT("%hs - Incrementing team score from Character class"), __FUNCTION__);
 					GameState->Server_IncrementTeamScore(MyTeam);
 				}
 				else

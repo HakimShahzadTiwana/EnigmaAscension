@@ -20,15 +20,24 @@ void AEAGameState::Server_IncrementTeamScore_Implementation(bool bIsTeamA)
 	if(bIsTeamA)
 	{
 		ScoreTeamB++;
+		UE_LOG(LogGameMode, Log, TEXT("%hs - Incrementing Score for Team B to %d"), __FUNCTION__,ScoreTeamB);
+
 		if(GIsServer)
 		{
+			UE_LOG(LogGameMode, Log, TEXT("%hs - Updating UI to increment score for Team B by calling Cleint RPC"), __FUNCTION__);
+
 			Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0))->PlayerHUD->UpdateTeamScore(false,ScoreTeamB);
+			
 			//OnRep_ScoreTeamB();
 		}
 	}
 	else
 	{
+		UE_LOG(LogGameMode, Log, TEXT("%hs - Incrementing Score for Team A to %d"), __FUNCTION__,ScoreTeamB);
+
 		ScoreTeamA++;
+		UE_LOG(LogGameMode, Log, TEXT("%hs - Updating UI to increment score for Team A by calling Cleint RPC"), __FUNCTION__);
+
 		Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0))->PlayerHUD->UpdateTeamScore(true,ScoreTeamA);
 		//OnRep_ScoreTeamA();
 	}
@@ -37,11 +46,14 @@ void AEAGameState::Server_IncrementTeamScore_Implementation(bool bIsTeamA)
 
 void AEAGameState::OnRep_ScoreTeamA()
 {
+	UE_LOG(LogGameMode, Log, TEXT("%hs"), __FUNCTION__);
+
 	Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0))->PlayerHUD->UpdateTeamScore(true,ScoreTeamA);
 }
 
 void AEAGameState::OnRep_ScoreTeamB()
 {
+	UE_LOG(LogGameMode, Log, TEXT("%hs"), __FUNCTION__);
 	Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0))->PlayerHUD->UpdateTeamScore(false,ScoreTeamB);
 }
 

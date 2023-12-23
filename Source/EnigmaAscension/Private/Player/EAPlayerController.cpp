@@ -25,7 +25,9 @@ void AEAPlayerController::BeginPlay()
 	Super::BeginPlay();
 	PlayerPawn = GetPawn();
 	//Binding Gas Abilities here because InputComponent is called before begin play and Pawn is not valid there
-	BindGasInputs();
+	//BindGasInputs();
+	
+	
 }
 
 void AEAPlayerController::Tick(float DeltaSeconds)
@@ -68,8 +70,15 @@ void AEAPlayerController::BindGasInputs()
 			if(IsValid(PlayerCharacter->GetAbilitySystemComponent()))
 			{
 				const FGameplayAbilityInputBinds Binds("Confirm","Cancel",FTopLevelAssetPath(GetPathNameSafe(UClass::TryFindTypeSlow<UEnum>("EEAAbilityInput"))),static_cast<int32>(EEAAbilityInput::Confirm),static_cast<int32>(EEAAbilityInput::Cancel));
-				PlayerCharacter->GetAbilitySystemComponent()->BindAbilityActivationToInputComponent(InputComponent,Binds);
-				UE_LOG(LogPlayerController,Log,TEXT("AEAPlayerController::BindGasInputs - Inputs have been binded"));
+				if(IsValid(InputComponent))
+				{
+					PlayerCharacter->GetAbilitySystemComponent()->BindAbilityActivationToInputComponent(InputComponent,Binds);
+					UE_LOG(LogPlayerController,Log,TEXT("AEAPlayerController::BindGasInputs - Inputs have been binded"));
+				}
+				else
+				{
+					UE_LOG(LogPlayerController, Warning, TEXT("%hs - Input Component not valid"), __FUNCTION__);
+				}
 			}
 			else
 			{
@@ -250,7 +259,6 @@ void AEAPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 	PlayerPawn = InPawn;
-	BindGasInputs();
 	UE_LOG(LogTemp,Log,TEXT("AEAPlayerController::OnPossess"));
 }
 

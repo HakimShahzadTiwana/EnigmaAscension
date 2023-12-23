@@ -92,15 +92,18 @@ void UPlayerHUD::HostStartGame()
 	Canvas_Lobby->SetVisibility(ESlateVisibility::Collapsed);
 }
 
-void UPlayerHUD::UpdateTeamScore(bool bIsTeamA, int Score)
+void UPlayerHUD::UpdateTeamScore_Implementation(bool bIsTeamA, int Score)
 {
 	if(bIsTeamA)
 	{
+		UE_LOG(LogCore, Log, TEXT("%hs - Updatinh UI for Team A"), __FUNCTION__);
+
 		TeamA_Score->SetText(FText::FromString(FString::FromInt(Score)));
 		
 	}
 	else
 	{
+		UE_LOG(LogCore, Log, TEXT("%hs - Updatinh UI for Team B"), __FUNCTION__);
 		TeamB_Score->SetText(FText::FromString(FString::FromInt(Score)));
 	}
 
