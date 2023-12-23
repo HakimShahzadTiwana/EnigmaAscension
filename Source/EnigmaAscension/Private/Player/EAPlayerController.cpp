@@ -249,7 +249,9 @@ FPlayerInputData AEAPlayerController::Client_CollectInputData(EEAAbilityInput In
 void AEAPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-	UE_LOG(LogTemp,Warning,TEXT("AEAPlayerController::OnPossess"));
+	PlayerPawn = InPawn;
+	BindGasInputs();
+	UE_LOG(LogTemp,Log,TEXT("AEAPlayerController::OnPossess"));
 }
 
 

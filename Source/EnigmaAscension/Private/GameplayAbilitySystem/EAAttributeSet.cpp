@@ -48,57 +48,50 @@ void UEAAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 
 void UEAAttributeSet::OnRep_MaxStamina(const FGameplayAttributeData& OldMaxStamina)
 {
-	UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_MaxStamina"));
-	UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_MaxStamina -  New Max Stamina is %f, Old Max Stamina was : %f"),MaxStamina.GetCurrentValue(),OldMaxStamina.GetCurrentValue());
+	// UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_MaxStamina"));
+	// UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_MaxStamina -  New Max Stamina is %f, Old Max Stamina was : %f"),MaxStamina.GetCurrentValue(),OldMaxStamina.GetCurrentValue());
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UEAAttributeSet,MaxStamina,OldMaxStamina);
 }
 
 void UEAAttributeSet::OnRep_Stamina(const FGameplayAttributeData& OldStamina)
 {
-	UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_Stamina"));
-	UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_Stamina -  New Stamina is %f, Old Stamina was : %f"),Stamina.GetCurrentValue(),OldStamina.GetCurrentValue());
+	// UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_Stamina"));
+	// UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_Stamina -  New Stamina is %f, Old Stamina was : %f"),Stamina.GetCurrentValue(),OldStamina.GetCurrentValue());
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UEAAttributeSet,Stamina,OldStamina);
 }
 
 void UEAAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth)
 {
-	UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_MaxHealth"));
-	UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_MaxHealth -  New Max Health is %f, Old Max Health was : %f"),MaxHealth.GetCurrentValue(),OldMaxHealth.GetCurrentValue());
+	// UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_MaxHealth"));
+	// UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_MaxHealth -  New Max Health is %f, Old Max Health was : %f"),MaxHealth.GetCurrentValue(),OldMaxHealth.GetCurrentValue());
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UEAAttributeSet,MaxHealth,OldMaxHealth);
 }
 
 void UEAAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth)
 {
-	UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_Health"));
-	UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_Health -  New Health is %f, Old Max Stamina was : %f"),Health.GetCurrentValue(),OldHealth.GetCurrentValue());
-	//AEACharacter* Owner =  Cast<AEACharacter>(GetOwningActor());
-	// if(IsValid(Owner)){
-	// 	if(!GIsServer){
-	// 		Owner->GetPlayerHUD()->SetHealth(Health.GetCurrentValue(),MaxHealth.GetCurrentValue());
-	// 	}
-	// }
-	
+	// UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_Health"));
+	// UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_Health -  New Health is %f, Old Max Stamina was : %f"),Health.GetCurrentValue(),OldHealth.GetCurrentValue());
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UEAAttributeSet,Health,OldHealth); 
 }
 
 void UEAAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana)
 {
-	UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_MaxMana"));
-	UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_MaxMana -  New Max Stamina is %f, Old Max Stamina was : %f"),MaxMana.GetCurrentValue(),OldMaxMana.GetCurrentValue());
+	// UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_MaxMana"));
+	// UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_MaxMana -  New Max Stamina is %f, Old Max Stamina was : %f"),MaxMana.GetCurrentValue(),OldMaxMana.GetCurrentValue());
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UEAAttributeSet,MaxMana,OldMaxMana);
 }
 
 void UEAAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldMana)
 {
-	UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_Mana"));
-	UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_Mana -  New Max Stamina is %f, Old Health was : %f"),Mana.GetCurrentValue(),OldMana.GetCurrentValue());
+	// UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_Mana"));
+	// UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_Mana -  New Max Stamina is %f, Old Health was : %f"),Mana.GetCurrentValue(),OldMana.GetCurrentValue());
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UEAAttributeSet,Mana,OldMana);
 }
 
 void UEAAttributeSet::OnRep_AttackDamage(const FGameplayAttributeData& OldAttackDamage)
 {
-	UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_AttackDamage"));
-	UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_AttackDamage -  New AttackDamage is %f, Old AttackDamage was : %f"),AttackDamage.GetCurrentValue(),OldAttackDamage.GetCurrentValue());
+	// UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_AttackDamage"));
+	// UE_LOG(LogGAS,Log,TEXT("UEAAttributeSet::OnRep_AttackDamage -  New AttackDamage is %f, Old AttackDamage was : %f"),AttackDamage.GetCurrentValue(),OldAttackDamage.GetCurrentValue());
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UEAAttributeSet,AttackDamage,OldAttackDamage);
 }
 
