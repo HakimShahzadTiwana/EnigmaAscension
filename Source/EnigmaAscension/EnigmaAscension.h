@@ -10,6 +10,8 @@ enum class EEAAbilityInput : uint8
 	None UMETA(DisplayName = "None"),
 	Confirm UMETA(DisplayName = "Confirm"),
 	Cancel UMETA(DisplayName = "Cancel"),
+	ForwardMovement UMETA(DisplayName = "ForwardMovement"),
+	RightMovement UMETA(DisplayName = "RightMovement"),
 	Sprint UMETA(DisplayName = "Sprint"),
 	Crouch UMETA(DisplayName = "Crouch"),
 	PrimaryAttack UMETA(DisplayName = "PrimaryAttack"),

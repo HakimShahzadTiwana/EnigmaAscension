@@ -90,6 +90,10 @@ void UPlayerHUD::HostStartGame()
 {
 	Canvas_InGame->SetVisibility(ESlateVisibility::Visible);
 	Canvas_Lobby->SetVisibility(ESlateVisibility::Collapsed);
+	 UGameplayStatics::GetPlayerController(GetWorld(),0)->SetShowMouseCursor(false);
+	 FInputModeGameOnly GameOnly;
+	 UGameplayStatics::GetPlayerController(GetWorld(),0)->SetInputMode(GameOnly);
+	
 }
 
 void UPlayerHUD::UpdateTeamScore_Implementation(bool bIsTeamA, int Score)

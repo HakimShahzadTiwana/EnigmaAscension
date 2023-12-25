@@ -122,6 +122,7 @@ void AEACharacter::NotifyControllerChanged()
 		if(AEAPlayerController* EAController = Cast<AEAPlayerController>(GetController()))
 		{
 			EAController->PlayerPawn = this;
+			EAController->SetupInputComponent();
 			EAController->BindGasInputs();
 		}
 	
@@ -148,7 +149,7 @@ void AEACharacter::OnHealthChanged(const FOnAttributeChangeData& OnAttributeChan
 	UE_LOG(LogGAS,Log,TEXT("AEACharacter::OnHealthChanged"));
 	if(OnAttributeChangeData.NewValue<=0)
 	{
-		if(GIsServer)
+		if(!GetWorld()->IsNetMode(NM_Client))
 		{
 			if(OnAttributeChangeData.GEModData)
 			{
@@ -175,7 +176,7 @@ void AEACharacter::OnHealthChanged(const FOnAttributeChangeData& OnAttributeChan
 
 void AEACharacter::OnStaminaChanged(const FOnAttributeChangeData& OnAttributeChangeData)
 {
-	UE_LOG(LogGAS,Log,TEXT("AEACharacter::OnStaminaChanged"));
+	// UE_LOG(LogGAS,Log,TEXT("AEACharacter::OnStaminaChanged"));
 	if(AEAPlayerController* EA_Controller = Cast<AEAPlayerController>(GetController()); IsValid(Controller)){
 		EA_Controller->Client_UpdateStaminaUI(OnAttributeChangeData.NewValue,AttributeSet->GetMaxStamina());
 	}
@@ -183,7 +184,7 @@ void AEACharacter::OnStaminaChanged(const FOnAttributeChangeData& OnAttributeCha
 
 void AEACharacter::OnManaChanged(const FOnAttributeChangeData& OnAttributeChangeData)
 {
-	UE_LOG(LogGAS,Log,TEXT("AEACharacter::OnManaChanged"));
+	// UE_LOG(LogGAS,Log,TEXT("AEACharacter::OnManaChanged"));
 	if(AEAPlayerController* EA_Controller = Cast<AEAPlayerController>(GetController()); IsValid(Controller)){
 		EA_Controller->Client_UpdateManaUI(OnAttributeChangeData.NewValue,AttributeSet->GetMaxMana());
 	}

@@ -45,7 +45,8 @@ void AEAPlayerController::SetupInputComponent()
 		UE_LOG(LogPlayerController, Warning, TEXT("InputComponent is not valid"));
 		return;
 	}
-	
+	if(Cast<AEACharacter>(PlayerPawn))
+	{
 		UE_LOG(LogPlayerController, Log, TEXT("AEAPlayerController::SetupInputComponent - Binding Inputs"));
 		//Axis Mappings
 		InputComponent->BindAxis("MoveForward",this,&AEAPlayerController::MoveForward);
@@ -55,6 +56,13 @@ void AEAPlayerController::SetupInputComponent()
 		//ActionMappings
 		InputComponent->BindAction("Jump",IE_Pressed,this,&AEAPlayerController::StartJump);
 		InputComponent->BindAction("Jump",IE_Released,this,&AEAPlayerController::StopJump);
+	}
+	else
+	{
+		UE_LOG(LogPlayerController, Log, TEXT("%hs - Pawn is not a PLayable Character"), __FUNCTION__);
+
+	}
+		
 		
 	
 	
@@ -112,6 +120,7 @@ void AEAPlayerController::MoveForward(float X)
 		FRotator ForwardRot =FRotator(0,PlayerPawn->GetControlRotation().Yaw,0);
 		FVector ForwardVec = UKismetMathLibrary::GetForwardVector(ForwardRot);
 		PlayerPawn->AddMovementInput(ForwardVec,X);
+		Client_CollectInputData(EEAAbilityInput::ForwardMovement,ForwardVec*X);
 		
 	}
 	else
@@ -128,6 +137,9 @@ void AEAPlayerController::MoveRight(float X)
 		FRotator RightRot =FRotator(0,PlayerPawn->GetControlRotation().Yaw,0);
 		FVector RightVec = UKismetMathLibrary::GetRightVector(RightRot);
 		PlayerPawn->AddMovementInput(RightVec,X);
+		Client_CollectInputData(EEAAbilityInput::RightMovement,RightVec*X);
+
+		
 	}
 	else
 	{
@@ -220,7 +232,7 @@ void AEAPlayerController::Client_UpdateTeamUI_Implementation(const TArray<FStrin
 	PlayerHUD->AddPlayer_LobbyInfo(PlayerNames,PlayerTeams);
 }
 
-FPlayerInputData AEAPlayerController::Client_CollectInputData(EEAAbilityInput InputType,int TargetControllerID)
+FPlayerInputData AEAPlayerController::Client_CollectInputData(EEAAbilityInput InputType,FVector InputValue,int TargetControllerID)
 {
 	UE_LOG(LogPlayerController, Log, TEXT("Client_CollectInputData"));
 	
@@ -238,7 +250,8 @@ FPlayerInputData AEAPlayerController::Client_CollectInputData(EEAAbilityInput In
 	UE_LOG(LogPlayerController, Log, TEXT("Player Input ID is : %d (Frame) + %d (Instigator ID)"),I_ID.Frame,I_ID.InstigatorControllerID);
 	
 	PI_Data.InputType = InputType;
-	UE_LOG(LogPlayerController, Log, TEXT(" Input type is  : %s"),*UEnum::GetDisplayValueAsText(InputType).ToString());
+	PI_Data.InputValue = InputValue;
+	UE_LOG(LogPlayerController, Log, TEXT(" Input type is  : %s with value : %s"),*UEnum::GetDisplayValueAsText(InputType).ToString(),*InputValue.ToString());
 	
 	PI_Data.TargetControllerID = TargetControllerID;
 	UE_LOG(LogPlayerController, Log, TEXT(" Target Controller ID is  : %d"),TargetControllerID);
@@ -284,8 +297,7 @@ void AEAPlayerController::Client_UpdateHealthUI_Implementation(float NewHealth,f
 	if(IsValid(PlayerHUD)){
 		PlayerHUD->SetHealth(NewHealth,MaxHealth);
 	}
-	UE_LOG(LogGAS,Log,TEXT("AEACharacter::Client_UpdateHealthUI_Implementation - Updating Player UI New Health = %f, Max Health = %f"),
-		 NewHealth,MaxHealth);
+	UE_LOG(LogGAS,Log,TEXT("AEAPlayerController::Client_UpdateHealthUI_Implementation - Updating Player UI New Health = %f, Max Health = %f"), NewHealth,MaxHealth);
 }
 
 void AEAPlayerController::Client_UpdateStaminaUI_Implementation(float NewStamina, float MaxStamina)
@@ -293,8 +305,7 @@ void AEAPlayerController::Client_UpdateStaminaUI_Implementation(float NewStamina
 	if(IsValid(PlayerHUD)){
 		PlayerHUD->SetStamina(NewStamina,MaxStamina);
 	}
-	UE_LOG(LogGAS,Log,TEXT("AEACharacter::Client_UpdateStaminaUI_Implementation - Updating Player UI New Stamina = %f, Max Stamina = %f"),
-		 NewStamina,MaxStamina);
+	// UE_LOG(LogGAS,Log,TEXT("AEAPlayerController::Client_UpdateStaminaUI_Implementation - Updating Player UI New Stamina = %f, Max Stamina = %f"),NewStamina,MaxStamina);
 }
 
 void AEAPlayerController::Client_UpdateManaUI_Implementation(float NewMana, float MaxMana)
@@ -302,6 +313,5 @@ void AEAPlayerController::Client_UpdateManaUI_Implementation(float NewMana, floa
 	if(IsValid(PlayerHUD)){
 		PlayerHUD->SetMana(NewMana,MaxMana);
 	}
-	UE_LOG(LogGAS,Log,TEXT("AEACharacter::Client_UpdateManaUI_Implementation - Updating Player UI New Mana = %f, Max Mana = %f"),
-		 NewMana,MaxMana);
+	// UE_LOG(LogGAS,Log,TEXT("AEAPlayerController::Client_UpdateManaUI_Implementation - Updating Player UI New Mana = %f, Max Mana = %f"),NewMana,MaxMana);
 }

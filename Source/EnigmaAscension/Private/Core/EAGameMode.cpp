@@ -69,8 +69,16 @@ void AEAGameMode::AddInputToBuffer(const FPlayerInputData& Data)
 	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer - Client Ping is : %d"), Data.ClientPing);
 	int RewindIndex = InputBuffer.Num()-1-(Data.ClientPing/2);
 	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer -Inserting Sent data to Index : %d"),RewindIndex);
-	
-	InputBuffer[RewindIndex] = Data;
+	if (RewindIndex>0 && RewindIndex<InputBuffer.Num())
+	{
+		InputBuffer[RewindIndex] = Data;
+	}
+	else
+	{
+		UE_LOG(LogGameMode, Warning, TEXT("%hs - Rewind Index out of bounds : %d"), __FUNCTION__,RewindIndex);
+		return;
+
+	}
 
 	if(Data.ClientPing>RollbackPingThreshold)
 	{
@@ -135,6 +143,8 @@ void AEAGameMode::PrintBufferHead()
 			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferHead - Player Ping : %d"), Data.ClientPing);
 			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferHead - TimeStamp : %f"), Data.Timestamp);
 			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferHead - Target Index : %d"), Data.TargetControllerID);
+			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferHead - Input was : %s with value %s"),*UEnum::GetDisplayValueAsText(Data.InputType).ToString(),*Data.InputValue.ToString());
+
 			UE_LOG(LogGameMode, Log, TEXT("--------------------------------------------------"));
 		}
 	}
@@ -156,6 +166,8 @@ void AEAGameMode::PrintBufferTail()
 			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferTail - Player Ping : %d"), Data.ClientPing);
 			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferTail - TimeStamp : %f"), Data.Timestamp);
 			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferTail - Target Index : %d"), Data.TargetControllerID);
+			UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferTail - Input was : %s with value %s"),*UEnum::GetDisplayValueAsText(Data.InputType).ToString(),*Data.InputValue.ToString());
+
 			UE_LOG(LogGameMode, Log, TEXT("--------------------------------------------------"));
 			
 		}
@@ -173,6 +185,7 @@ void AEAGameMode::PrintBufferSnapShot()
 		UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferSnapshot - Player Ping : %d"), Data.ClientPing);
 		UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferSnapshot - TimeStamp : %f"), Data.Timestamp);
 		UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferSnapshot - Target Index : %d"), Data.TargetControllerID);
+		UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::PrintBufferSnapshot - Input was : %s with value %s"),*UEnum::GetDisplayValueAsText(Data.InputType).ToString(),*Data.InputValue.ToString());
 		UE_LOG(LogGameMode, Log, TEXT("--------------------------------------------------"));
 			
 	}
@@ -181,6 +194,7 @@ void AEAGameMode::PrintBufferSnapShot()
 void AEAGameMode::Rollback(int InstigatorID, int TargetID)
 {
 	UE_LOG(LogGameMode, Log, TEXT("Target was found, going to rollback based on relevant inputs."));
+	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue, FString::Printf(TEXT("Rolling Back...")));
 	// Find the array that contains relevant information for the instigator
 	// This relevant information is basically the other players that had targeted the instigator
 	if(TArray<FPlayerInputData> *Temp = RelevantInputs.Find(InstigatorID))

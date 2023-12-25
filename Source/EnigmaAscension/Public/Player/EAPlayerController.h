@@ -32,7 +32,9 @@ struct FPlayerInputData
 	
 	UPROPERTY(BlueprintReadWrite)
 	EEAAbilityInput InputType = EEAAbilityInput::None;
-	
+
+	UPROPERTY(BlueprintReadWrite)
+	FVector InputValue = FVector::Zero();
 	// Target Player Index
 	UPROPERTY(BlueprintReadWrite)
 	int TargetControllerID = -1 ;
@@ -95,7 +97,7 @@ public:
 	UFUNCTION(BlueprintCallable,Client, Reliable)
 	void Client_UpdateTeamUI(const TArray<FString>& PlayerNames , const TArray<bool>& PlayerTeams);
 	UFUNCTION(BlueprintCallable)
-	FPlayerInputData Client_CollectInputData(EEAAbilityInput InputType, int TargetControllerID);
+	FPlayerInputData Client_CollectInputData(EEAAbilityInput InputType,FVector InputValue = FVector::ZeroVector, int TargetControllerID = -1);
 	virtual void OnPossess(APawn* InPawn) override;
 
 	UFUNCTION(Client,Reliable)
