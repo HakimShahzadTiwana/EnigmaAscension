@@ -17,32 +17,10 @@ void UEAGameInstance::Init()
 	
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void UEAGameInstance::SetRollBack(bool bIsRollback)
+{
+	bIsRollbackSet=bIsRollback;
+}
 
 
 //Using Advanced Sessions 

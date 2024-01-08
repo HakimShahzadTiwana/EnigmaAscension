@@ -21,9 +21,13 @@ public:
 	UEAGameInstance();
 	UPROPERTY(BlueprintReadWrite)
 	FString PlayerName;
-	//const FName EA_SESSION_NAME = "EA_Game_Session";
-	//const FName EA_SESSION_MAIN_FILTER_KEY = "EA_Session";
-	//const FString EA_SESSION_MAIN_FILTER_VALUE = "EA_Simple_Session";
+	const FName EA_SESSION_NAME = "EA_Game_Session";
+	const FName EA_SESSION_MAIN_FILTER_KEY = "EA_Session";
+	const FString EA_SESSION_MAIN_FILTER_VALUE = "EA_Simple_Session";
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsRollbackSet =false;
+	
 protected:
 	
 	virtual void Init() override;
@@ -36,6 +40,10 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
 	void FindSessions();
 
+	UFUNCTION(Exec)
+	void SetRollBack(bool bIsRollback);
+
+	
 	//Using Advanced Session Interfaces in Child BP
 	//UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
 	//void JoinSession();
