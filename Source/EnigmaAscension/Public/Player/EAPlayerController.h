@@ -109,5 +109,6 @@ public:
 	UFUNCTION(Client,Reliable)
 	virtual void Client_CreateHUD();
 
-	void Open_GameWonUI(bool bIsTeamA);
+	UFUNCTION()
+	void Open_GameWonUI(bool bTeamAWon);
 };

@@ -24,12 +24,16 @@ void AEAPlayerController::BeginPlay()
 	UE_LOG(LogPlayerController, Log, TEXT("AEAPlayerController::BeginPlay"));
 	Super::BeginPlay();
 	PlayerPawn = GetPawn();
-	AEAGameMode* EA_GameMode = Cast<AEAGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if(IsValid(EA_GameMode))
+	if(GetNetMode() != ENetMode::NM_Client)
 	{
-		// TODO: Cast Failed Here Why ???
-		EA_GameMode->Notify_GameWon.AddDynamic(this, &AEAPlayerController::Open_GameWonUI);
+		AEAGameMode* EA_GameMode = Cast<AEAGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		if(IsValid(EA_GameMode))
+		{
+			// TODO: Cast Failed Here Why ???
+			EA_GameMode->Notify_GameWon.AddDynamic(this, &AEAPlayerController::Open_GameWonUI);
+		}
 	}
+	
 	//Binding Gas Abilities here because InputComponent is called before begin play and Pawn is not valid there
 	//BindGasInputs();
 	
@@ -281,8 +285,9 @@ void AEAPlayerController::OnPossess(APawn* InPawn)
 	UE_LOG(LogTemp,Log,TEXT("AEAPlayerController::OnPossess"));
 }
 
-void AEAPlayerController::Open_GameWonUI(bool bHasTeamAWon)
+void AEAPlayerController::Open_GameWonUI(bool bTeamAWon)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Blue, FString::Printf(TEXT("Game Won!")));
 	if(IsValid(PlayerHUD))
 	{
 		
