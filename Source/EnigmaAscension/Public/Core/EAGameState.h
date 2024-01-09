@@ -20,7 +20,8 @@ public:
 	int ScoreTeamA=0;
 	UPROPERTY(BlueprintReadWrite,ReplicatedUsing = OnRep_ScoreTeamB)
 	int ScoreTeamB=0;
-
+	UPROPERTY(BlueprintReadOnly)
+	int ScoreLimit = 10; // TODO: Make this Const
 	UFUNCTION()
 	virtual void OnRep_GameStarted();
 	UFUNCTION()

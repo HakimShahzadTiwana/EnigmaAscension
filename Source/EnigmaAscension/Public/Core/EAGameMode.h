@@ -12,6 +12,7 @@
  * 
  */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackTargetFound);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameWonSignature, bool, bIsTeamA);
 UCLASS()
 class ENIGMAASCENSION_API AEAGameMode : public AGameModeBase
 {
@@ -23,6 +24,9 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnGameWonSignature Notify_GameWon;
+	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UGameplayEffect> Heal;
 	
@@ -73,6 +77,9 @@ public:
 	void PrintBufferSnapShot();
 
 	void Rollback(int InstigatorID, int TargetID);
+
+	// Called By GameWon Delegate
+	void OnGameWon(bool bIsTeamA);
 };
 
 

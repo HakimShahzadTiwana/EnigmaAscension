@@ -3,6 +3,7 @@
 
 #include "Core/EAGameState.h"
 
+#include "Core/EAGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/EAPlayerController.h"
@@ -21,7 +22,19 @@ void AEAGameState::Server_IncrementTeamScore_Implementation(bool bIsTeamA)
 	{
 		ScoreTeamB++;
 		UE_LOG(LogGameMode, Log, TEXT("%hs - Incrementing Score for Team B to %d"), __FUNCTION__,ScoreTeamB);
-
+		if(ScoreTeamB >= ScoreLimit)
+		{
+			// Team B Won
+			AEAGameMode* EA_GameMode = Cast<AEAGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+			if(IsValid(EA_GameMode))
+			{
+				EA_GameMode->Notify_GameWon.Broadcast(bIsTeamA);
+			}
+			else
+			{
+				UE_LOG(LogGameMode, Log, TEXT("%hs - Failed to Cast GameMode - Unable to Call Game Won Delegate"), __FUNCTION__);
+			}
+		}
 		if(GetWorld()->IsNetMode(NM_ListenServer))
 		{
 			UE_LOG(LogGameMode, Log, TEXT("%hs - Updating UI to increment score for Team B by calling Client RPC"), __FUNCTION__);
@@ -35,7 +48,19 @@ void AEAGameState::Server_IncrementTeamScore_Implementation(bool bIsTeamA)
 
 		ScoreTeamA++;
 		UE_LOG(LogGameMode, Log, TEXT("%hs - Updating UI to increment score for Team A by calling Client RPC"), __FUNCTION__);
-
+		if(ScoreTeamA >= ScoreLimit)
+		{
+			AEAGameMode* EA_GameMode = Cast<AEAGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+			if(IsValid(EA_GameMode))
+			{
+				EA_GameMode->Notify_GameWon.Broadcast(bIsTeamA);
+			}
+			else
+			{
+				UE_LOG(LogGameMode, Log, TEXT("%hs - Failed to Cast GameMode - Unable to Call Game Won Delegate"), __FUNCTION__);
+			}
+			// Team A Won
+		}
 		if(GetWorld()->IsNetMode(NM_ListenServer))
 		{
 			// Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0))->PlayerHUD->UpdateTeamScore(true,ScoreTeamA);

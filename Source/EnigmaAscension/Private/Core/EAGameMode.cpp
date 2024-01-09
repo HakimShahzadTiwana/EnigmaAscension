@@ -218,3 +218,14 @@ void AEAGameMode::Rollback(int InstigatorID, int TargetID)
 		UE_LOG(LogGameMode, Log, TEXT("No relevant inputs were found for instigator with id : %d"),InstigatorID);
 	}
 }
+
+void AEAGameMode::OnGameWon(bool bIsTeamA)
+{
+	if(bIsTeamA)
+	{
+		
+	}else
+	{
+		
+	}
+}

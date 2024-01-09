@@ -24,6 +24,8 @@ void AEAPlayerController::BeginPlay()
 	UE_LOG(LogPlayerController, Log, TEXT("AEAPlayerController::BeginPlay"));
 	Super::BeginPlay();
 	PlayerPawn = GetPawn();
+	AEAGameMode* EA_GameMode = Cast<AEAGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	EA_GameMode->Notify_GameWon.AddDynamic(this, &Open_GameWonUI);
 	//Binding Gas Abilities here because InputComponent is called before begin play and Pawn is not valid there
 	//BindGasInputs();
 	
@@ -273,6 +275,14 @@ void AEAPlayerController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 	PlayerPawn = InPawn;
 	UE_LOG(LogTemp,Log,TEXT("AEAPlayerController::OnPossess"));
+}
+
+void AEAPlayerController::Open_GameWonUI(bool bIsTeamA)
+{
+	if(IsValid(PlayerHUD))
+	{
+		
+	}
 }
 
 

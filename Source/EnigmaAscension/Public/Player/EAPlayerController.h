@@ -108,4 +108,6 @@ public:
 	virtual void Client_UpdateManaUI(float NewMana,float MaxMana);
 	UFUNCTION(Client,Reliable)
 	virtual void Client_CreateHUD();
+
+	void Open_GameWonUI(bool bIsTeamA);
 };
