@@ -76,6 +76,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly,EditDefaultsOnly,Category="GAS|Defaults")
 	TArray<TSubclassOf<class UEAGameplayAbility>> DefaultAbilities;
 
+	bool bIsDead=false;
 protected:
 	virtual void GiveDefaultAbilities();
 	

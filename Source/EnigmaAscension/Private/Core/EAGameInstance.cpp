@@ -4,6 +4,7 @@
 #include "Core/EAGameInstance.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
+#include "GameFramework/GameUserSettings.h"
 #include "Kismet/GameplayStatics.h"
 #include "Online/OnlineSessionNames.h"
 DEFINE_LOG_CATEGORY(LogEANetworking);
@@ -14,7 +15,9 @@ UEAGameInstance::UEAGameInstance()
 
 void UEAGameInstance::Init()
 {
-	
+	UGameUserSettings* UserSettings = UGameUserSettings::GetGameUserSettings();
+	UserSettings->RunHardwareBenchmark();
+	UserSettings->ApplyHardwareBenchmarkResults();
 }
 
 void UEAGameInstance::SetRollBack(bool bIsRollback)

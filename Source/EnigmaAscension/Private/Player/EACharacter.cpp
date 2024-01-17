@@ -147,8 +147,9 @@ void AEACharacter::GiveAbilityToSelf(TSubclassOf<UEAGameplayAbility> Ability)
 void AEACharacter::OnHealthChanged(const FOnAttributeChangeData& OnAttributeChangeData)
 {
 	UE_LOG(LogGAS,Log,TEXT("AEACharacter::OnHealthChanged"));
-	if(OnAttributeChangeData.NewValue<=0)
+	if(OnAttributeChangeData.NewValue<=0 && !bIsDead)
 	{
+		bIsDead=true;
 		if(!GetWorld()->IsNetMode(NM_Client))
 		{
 			if(OnAttributeChangeData.GEModData)
@@ -156,7 +157,7 @@ void AEACharacter::OnHealthChanged(const FOnAttributeChangeData& OnAttributeChan
 				AEACharacter* TargetChar = Cast<AEACharacter>(OnAttributeChangeData.GEModData->Target.GetOwnerActor());
 				if(IsValid(TargetChar))
 				{
-					bool MyTeam= Cast<AEAPlayerState>(TargetChar->GetPlayerState())->bIsTeamA;
+					bool MyTeam = Cast<AEAPlayerState>(TargetChar->GetPlayerState())->bIsTeamA;
 					AEAGameState* GameState = Cast<AEAGameState>(UGameplayStatics::GetGameState(GetWorld()));
 					UE_LOG(LogGameMode, Log, TEXT("%hs - Incrementing team score from Character class"), __FUNCTION__);
 					GameState->Server_IncrementTeamScore(MyTeam);
@@ -290,7 +291,7 @@ void AEACharacter::HandleUltimateAbility_Implementation()
 void AEACharacter::SendGameplayEventFromHit(FGameplayTag EventTag, float AttackRadius)
 {
 	FVector SocketLocation=GetMesh()->GetSocketLocation(AttackSocketName);
-	DrawDebugSphere(GetWorld(),SocketLocation,AttackRadius,12,FColor::Blue,false,5,0,2);
+	//DrawDebugSphere(GetWorld(),SocketLocation,AttackRadius,12,FColor::Blue,false,5,0,2);
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
 	TArray<AActor*> ActorsToIgnore;
@@ -323,14 +324,15 @@ void AEACharacter::SendGameplayEventFromHit(FGameplayTag EventTag, float AttackR
 	}
 	else
 	{
-	GEngine->AddOnScreenDebugMessage(-1,2,FColor::Blue,TEXT("No Hits Found"));	
+		GEngine->AddOnScreenDebugMessage(-1,2,FColor::Blue,TEXT("No Hits Found"));	
 	}
-	
 }
 
 void AEACharacter::PlayCharacterDeathMontage()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue, FString::Printf(TEXT("Playing Death Montage")));
+	//TODO : Fix collision hits when dead
+	//SetActorEnableCollision(false);
 	float DeathTime = PlayAnimMontage(DeathMontage);
 	FTimerHandle Death_TimerHandle;
 	GetWorldTimerManager().SetTimer(Death_TimerHandle,this,&AEACharacter::HideCharacterOnDeath,DeathTime,false);
@@ -339,6 +341,8 @@ void AEACharacter::PlayCharacterDeathMontage()
 void AEACharacter::SpawnCharacter()
 {
 	InitializeAttributes();
+	bIsDead=false;
+	//SetActorEnableCollision(true);
 	EnableInput(UGameplayStatics::GetPlayerController(GetWorld(),0));
 	SetActorLocation(FVector(-12090.000000,-16200.000000,70.000000));
 	this->SetActorHiddenInGame(false);

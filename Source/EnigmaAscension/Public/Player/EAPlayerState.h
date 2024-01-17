@@ -19,7 +19,7 @@ public:
 	
 	UPROPERTY(Replicated)
 	int MyPlayerIndex;
-	UPROPERTY(Replicated)// TODO: Set this in Game Mode
+	UPROPERTY(Replicated,BlueprintReadWrite)// TODO: Set this in Game Mode
 	bool bIsTeamA;
 	UFUNCTION(BlueprintCallable)
 	int GetPlayerIndex() const;
