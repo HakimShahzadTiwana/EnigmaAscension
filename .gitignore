@@ -77,6 +77,10 @@ DerivedDataCache/*
 # External Assets From Unreal Market Place
 Content/ParagonCountess/*
 Content/ParagonGreystone/*
+Content/ParagonSevarog/*
+Content/ParagonSteel/*
+Content/EnvironmentPack2/*
+
 
 # Developer Settings
 Plugins/Developer/*
