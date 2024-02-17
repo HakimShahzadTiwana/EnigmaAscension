@@ -12,7 +12,7 @@
 #include "EACharacter.generated.h"
 
 
-
+class AEASupportItemBase;
 class UEAAbilitySystemComponent;
 class UEAAttributeSet;
 class UEAGameplayAbility;
@@ -111,12 +111,18 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual void GiveAbilityToSelf(TSubclassOf<UEAGameplayAbility> Ability);
+	UFUNCTION(Server,Reliable)
 	virtual void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect);
 	UFUNCTION(BlueprintCallable)
 	virtual void PlayCharacterDeathMontage();
 	void SpawnCharacter();
 	UPROPERTY(BlueprintReadWrite)
 	FInputID CurrentInputID;
+
+	UFUNCTION(Server,Reliable)
+	void Server_PickupSupportItem(AEASupportItemBase* Item);
+
+	
 	
 };
 

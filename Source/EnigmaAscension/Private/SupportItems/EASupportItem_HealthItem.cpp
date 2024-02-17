@@ -12,7 +12,6 @@ AEASupportItem_HealthItem::AEASupportItem_HealthItem()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 void AEASupportItem_HealthItem::Interact_Implementation(APawn* InstigatorPawn)
@@ -29,7 +28,7 @@ void AEASupportItem_HealthItem::Interact_Implementation(APawn* InstigatorPawn)
 	if (AEACharacter* TargetCharacter = Cast<AEACharacter>(InstigatorPawn))
 	{
 		TargetCharacter->ApplyEffectToSelf(HealEffect);
-		HideAndCooldownSupportItem();
+		TargetCharacter->Server_PickupSupportItem(this);
 	}
 }
 

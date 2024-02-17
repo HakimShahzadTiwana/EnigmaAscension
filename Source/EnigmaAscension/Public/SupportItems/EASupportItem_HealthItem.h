@@ -13,10 +13,10 @@ class ENIGMAASCENSION_API AEASupportItem_HealthItem : public AEASupportItemBase
 	GENERATED_BODY()
 	
 public:	
+
 	// Sets default values for this actor's properties
 	AEASupportItem_HealthItem();
 	void Interact_Implementation(APawn* InstigatorPawn) override;
 	
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	UStaticMeshComponent* MeshComponent;
+
 };

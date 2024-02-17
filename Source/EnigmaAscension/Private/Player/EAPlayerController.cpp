@@ -228,7 +228,7 @@ void AEAPlayerController::Server_CollectInputData_Implementation(FPlayerInputDat
 	float ping = Data.ClientPing;
 	if(IsLocalController() && Data.PlayerInputID.InstigatorControllerID!=0)
 	{
-		UE_LOG(LogPlayerController, Warning, TEXT("Server Call being run on client"));
+		//UE_LOG(LogPlayerController, Warning, TEXT("Server Call being run on client"));
 	}
 	else
 	{
@@ -244,34 +244,34 @@ void AEAPlayerController::Client_UpdateTeamUI_Implementation(const TArray<FStrin
 
 FPlayerInputData AEAPlayerController::Client_CollectInputData(EEAAbilityInput InputType,FVector InputValue,int TargetControllerID)
 {
-	UE_LOG(LogPlayerController, Log, TEXT("Client_CollectInputData"));
+	//UE_LOG(LogPlayerController, Log, TEXT("Client_CollectInputData"));
 	
 	FInputID I_ID;
 
 	I_ID.Frame = CurrentFrame;
-	UE_LOG(LogPlayerController, Log, TEXT("Current Frame for client is : %d"),CurrentFrame);
+	//UE_LOG(LogPlayerController, Log, TEXT("Current Frame for client is : %d"),CurrentFrame);
 	
 	I_ID.InstigatorControllerID = GetPlayerState<AEAPlayerState>()->MyPlayerIndex;
-	UE_LOG(LogPlayerController, Log, TEXT("Instigator Controller ID is : %d"),GetPlayerState<AEAPlayerState>()->MyPlayerIndex);
+	//UE_LOG(LogPlayerController, Log, TEXT("Instigator Controller ID is : %d"),GetPlayerState<AEAPlayerState>()->MyPlayerIndex);
 	
 	FPlayerInputData PI_Data;
 	
 	PI_Data.PlayerInputID = I_ID;
-	UE_LOG(LogPlayerController, Log, TEXT("Player Input ID is : %d (Frame) + %d (Instigator ID)"),I_ID.Frame,I_ID.InstigatorControllerID);
+	//UE_LOG(LogPlayerController, Log, TEXT("Player Input ID is : %d (Frame) + %d (Instigator ID)"),I_ID.Frame,I_ID.InstigatorControllerID);
 	
 	PI_Data.InputType = InputType;
 	PI_Data.InputValue = InputValue;
-	UE_LOG(LogPlayerController, Log, TEXT(" Input type is  : %s with value : %s"),*UEnum::GetDisplayValueAsText(InputType).ToString(),*InputValue.ToString());
+	//UE_LOG(LogPlayerController, Log, TEXT(" Input type is  : %s with value : %s"),*UEnum::GetDisplayValueAsText(InputType).ToString(),*InputValue.ToString());
 	
 	PI_Data.TargetControllerID = TargetControllerID;
-	UE_LOG(LogPlayerController, Log, TEXT(" Target Controller ID is  : %d"),TargetControllerID);
+	//(LogPlayerController, Log, TEXT(" Target Controller ID is  : %d"),TargetControllerID);
 	
 	PI_Data.Timestamp = GetWorld()->GetUnpausedTimeSeconds();
-	UE_LOG(LogPlayerController, Log, TEXT(" Timestamp is  : %f"),GetWorld()->GetUnpausedTimeSeconds())
+	//UE_LOG(LogPlayerController, Log, TEXT(" Timestamp is  : %f"),GetWorld()->GetUnpausedTimeSeconds())
 	
 	
 	PI_Data.ClientPing = GetPlayerState<AEAPlayerState>()->GetCompressedPing()*4;
-	UE_LOG(LogPlayerController, Log, TEXT(" Client Ping is  : %d"),PI_Data.ClientPing)
+	//UE_LOG(LogPlayerController, Log, TEXT(" Client Ping is  : %d"),PI_Data.ClientPing)
 	
 	Server_CollectInputData_Implementation(PI_Data);
 	

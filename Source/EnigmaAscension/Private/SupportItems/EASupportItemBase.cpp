@@ -4,6 +4,7 @@
 #include "SupportItems/EASupportItemBase.h"
 
 #include "Components/SphereComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AEASupportItemBase::AEASupportItemBase()
@@ -13,6 +14,10 @@ AEASupportItemBase::AEASupportItemBase()
 	SphereComponent = CreateDefaultSubobject<USphereComponent>("SphereComp");
 	SphereComponent->SetCollisionProfileName("SupportItem");
 	RootComponent = SphereComponent;
+	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>("MeshComponent");
+	ItemMesh->SetupAttachment(SphereComponent);
+	bReplicates = true;
+	
 
 	RespawnTime=10.0f;
 }
@@ -31,20 +36,27 @@ void AEASupportItemBase::BeginPlay()
 
 void AEASupportItemBase::ShowSupportItem()
 {
+	UE_LOG(LogCore, Log, TEXT("%hs - Showing support item"), __FUNCTION__);
+
 	SetSupportItemState(true);
 }
 
 void AEASupportItemBase::HideAndCooldownSupportItem()
 {
+	UE_LOG(LogCore, Log, TEXT("%hs - Hiding Support item"), __FUNCTION__);
+
 	SetSupportItemState(false);
 	GetWorldTimerManager().SetTimer(TimerHandle_RespawnTimer,this,&AEASupportItemBase::ShowSupportItem,RespawnTime);
 }
 
 void AEASupportItemBase::SetSupportItemState(bool bNewIsActive)
 {
+	UE_LOG(LogCore, Log, TEXT("%hs - Setting support item state to %d"), __FUNCTION__,bNewIsActive);
+
 	SetActorEnableCollision(bNewIsActive);
 	RootComponent->SetVisibility(bNewIsActive,true);
 }
+
 
 
 // Called every frame
@@ -54,3 +66,11 @@ void AEASupportItemBase::Tick(float DeltaTime)
 
 }
 
+void AEASupportItemBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	// Replicate the mesh component
+	DOREPLIFETIME(AEASupportItemBase, ItemMesh);
+	DOREPLIFETIME(AEASupportItemBase,SphereComponent);
+}

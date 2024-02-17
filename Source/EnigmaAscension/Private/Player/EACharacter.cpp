@@ -17,6 +17,7 @@
 #include "Core/EAGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/EAPlayerController.h"
+#include "SupportItems/EASupportItemBase.h"
 
 // Sets default values
 AEACharacter::AEACharacter()
@@ -223,7 +224,7 @@ void AEACharacter::GiveDefaultAbilities()
 	
 }
 
-void AEACharacter::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect)
+void AEACharacter::ApplyEffectToSelf_Implementation(TSubclassOf<UGameplayEffect> Effect)
 {
 	//The context in which we're applying the effect, i.e. the instigator, the target etc.
 	FGameplayEffectContextHandle EffectContextHandle = AbilitySystemComponent->MakeEffectContext();
@@ -346,5 +347,12 @@ void AEACharacter::SpawnCharacter()
 	EnableInput(UGameplayStatics::GetPlayerController(GetWorld(),0));
 	SetActorLocation(FVector(-12090.000000,-16200.000000,70.000000));
 	this->SetActorHiddenInGame(false);
+}
+
+
+
+void AEACharacter::Server_PickupSupportItem_Implementation(AEASupportItemBase* Item)
+{
+	Item->HideAndCooldownSupportItem();
 }
 

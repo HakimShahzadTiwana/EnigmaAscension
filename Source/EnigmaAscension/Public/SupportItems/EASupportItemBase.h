@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interfaces/EAGameplayInterface.h"
+#include "Player/EACharacter.h"
 #include "EASupportItemBase.generated.h"
 
 class UGameplayEffect;
@@ -15,30 +16,39 @@ class ENIGMAASCENSION_API AEASupportItemBase : public AActor, public IEAGameplay
 {
 	GENERATED_BODY()
 	
-public:	
-	// Sets default values for this actor's properties
+public:
+	
 	AEASupportItemBase();
-	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
+
 	UPROPERTY(BlueprintReadOnly,EditDefaultsOnly,Category="GAS|Defaults")
 	TSubclassOf<UGameplayEffect>HealEffect;
+
+	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
+
+	void HideAndCooldownSupportItem();
+	
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="Components",Replicated)
+	USphereComponent* SphereComponent;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="Components",Replicated)
+	UStaticMeshComponent* ItemMesh;
+	
 	UPROPERTY(EditAnywhere,Category="SupportItem")
 	float RespawnTime;
 
 	FTimerHandle TimerHandle_RespawnTimer;
+
+	
 	UFUNCTION()
 	void ShowSupportItem();
 	
-	void HideAndCooldownSupportItem();
-
 	void SetSupportItemState(bool bNewIsActive);
 
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="Components")
-	USphereComponent* SphereComponent;
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+	
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 };
