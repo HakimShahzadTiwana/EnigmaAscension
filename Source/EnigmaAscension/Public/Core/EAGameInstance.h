@@ -9,6 +9,21 @@
 #include "Networking/EASessionInterface.h"
 #include "EAGameInstance.generated.h"
 
+USTRUCT(BlueprintType)
+struct FSessionData
+{
+	GENERATED_BODY()
+	UPROPERTY(BlueprintReadWrite)
+	FString Name;
+	UPROPERTY(BlueprintReadWrite)
+	int CurrentPlayers;
+	UPROPERTY(BlueprintReadWrite)
+	int MaxPlayers;
+	UPROPERTY(BlueprintReadWrite)
+	FString CreationTime;
+	
+};
+
 /**
  * Used for creating sessions (Implementation in blueprints using Advanced Session Plugin)
  */
@@ -27,6 +42,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsRollbackSet =false;
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<FSessionData> SessionData;
 	
 protected:
 	
@@ -43,13 +61,19 @@ protected:
 	UFUNCTION(Exec)
 	void SetRollBack(bool bIsRollback);
 
+	UFUNCTION(BlueprintCallable)
+	TArray<FSessionData> SearchSessionData(FString UserQuery);
+
+	UFUNCTION(BlueprintCallable)
+	TArray<FSessionData> FilterSessionData(bool publicMatch, FString Hostname);
+
+	UFUNCTION(BlueprintCallable)
+	TArray<FSessionData> SortSessionData();
+
+	void PrintSessionData (TArray<FSessionData> data);
 	
-	//Using Advanced Session Interfaces in Child BP
-	//UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
-	//void JoinSession();
-	
-	
-	
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	FString GetDateTime();
 	
 	
 	
