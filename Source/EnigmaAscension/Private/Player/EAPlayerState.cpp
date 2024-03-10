@@ -3,6 +3,7 @@
 
 #include "Player/EAPlayerState.h"
 
+#include "OnlineSubsystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/EAPlayerController.h"
@@ -13,8 +14,15 @@ AEAPlayerState::AEAPlayerState()
 	SetShouldUpdateReplicatedPing(true);
 }
 
+void AEAPlayerState::BeginPlay()
+{
+	Super::BeginPlay();
+	Stats.PlayerName = GetPlayerName();
+}
+
 int AEAPlayerState::GetPlayerIndex() const
 {
+	
 	return MyPlayerIndex;
 }
 
@@ -23,4 +31,5 @@ void AEAPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AEAPlayerState, MyPlayerIndex);
 	DOREPLIFETIME(AEAPlayerState, bIsTeamA);
+	DOREPLIFETIME(AEAPlayerState, Stats);
 }

@@ -7,17 +7,19 @@
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/EAPlayerController.h"
+#include "Player/EAPlayerState.h"
 
 void AEAGameState::OnRep_GameStarted()
 {
 	UE_LOG(LogGameState, Log, TEXT("On_Rep GameStarted"));
 	Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0))->PlayerHUD->HostStartGame();
+	Cast<AEAPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0))->Stats.MatchScore = 0;
 }
 
 
 void AEAGameState::Server_IncrementTeamScore_Implementation(bool bIsTeamA)
 {
-	  
+	
 	if(bIsTeamA)
 	{
 		ScoreTeamB++;
@@ -89,4 +91,15 @@ void AEAGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(AEAGameState,bGameStarted);
 	DOREPLIFETIME(AEAGameState,ScoreTeamA);
 	DOREPLIFETIME(AEAGameState,ScoreTeamB);
+}
+
+TArray<FPlayerStatistics> AEAGameState::GetPlayerStatistics()
+{
+	TArray<FPlayerStatistics> PlayerStats;
+	for (auto Player : PlayerArray)
+	{
+		PlayerStats.Add(Cast<AEAPlayerState>(Player)->Stats);
+	}
+
+	return PlayerStats;
 }

@@ -4,11 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
+#include "Player/EAPlayerState.h"
 #include "EAGameState.generated.h"
 
 /**
  * 
  */
+
 UCLASS()
 class ENIGMAASCENSION_API AEAGameState : public AGameStateBase
 {
@@ -32,7 +34,9 @@ public:
 	UFUNCTION(Server,Reliable)
 	void Server_IncrementTeamScore(bool bIsTeamA);
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	TArray<FPlayerStatistics> GetPlayerStatistics();
 	
 };
 

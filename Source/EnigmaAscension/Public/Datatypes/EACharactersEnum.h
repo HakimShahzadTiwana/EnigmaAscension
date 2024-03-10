@@ -9,7 +9,7 @@
 /**
  * 
  */
-
+// Moved to EACharacter.h
 UCLASS()
 class ENIGMAASCENSION_API UEACharactersEnum : public UUserDefinedEnum
 {

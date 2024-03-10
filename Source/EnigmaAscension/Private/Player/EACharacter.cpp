@@ -162,6 +162,8 @@ void AEACharacter::OnHealthChanged(const FOnAttributeChangeData& OnAttributeChan
 					AEAGameState* GameState = Cast<AEAGameState>(UGameplayStatics::GetGameState(GetWorld()));
 					UE_LOG(LogGameMode, Log, TEXT("%hs - Incrementing team score from Character class"), __FUNCTION__);
 					GameState->Server_IncrementTeamScore(MyTeam);
+					GetPlayerState<AEAPlayerState>()->Stats.MatchScore++;
+					UE_LOG(LogGAS, Log, TEXT("%hs - Updated Player score to %d"), __FUNCTION__,GetPlayerState<AEAPlayerState>()->Stats.MatchScore);
 				}
 				else
 				{
