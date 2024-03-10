@@ -43,8 +43,14 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsRollbackSet =false;
 
+	// Session Data to send forward. Can be sorted/filtered/searched
 	UPROPERTY(BlueprintReadWrite)
 	TArray<FSessionData> SessionData;
+
+	// Session Data retrieved from Steam Sessions
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FSessionData> FoundSessions;
+
 	
 protected:
 	
@@ -74,7 +80,9 @@ protected:
 	
 	UFUNCTION(BlueprintCallable,BlueprintPure)
 	FString GetDateTime();
-	
+
+	UFUNCTION(BlueprintCallable)
+	void SaveSteamSessionsFound(TArray<FSessionData> data);
 	
 	
 	

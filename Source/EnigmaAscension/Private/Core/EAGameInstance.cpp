@@ -29,7 +29,12 @@ void UEAGameInstance::SetRollBack(bool bIsRollback)
 TArray<FSessionData> UEAGameInstance::SearchSessionData(FString UserQuery)
 {
 	TArray<FSessionData> SearchedSessionData;
-	for (auto data : SessionData)
+	if (FoundSessions.IsEmpty())
+	{
+		return SearchedSessionData;
+	}
+	
+	for (auto data : FoundSessions)
 	{
 		if(data.Name.Contains(UserQuery))
 		{
@@ -44,6 +49,12 @@ TArray<FSessionData> UEAGameInstance::SearchSessionData(FString UserQuery)
 TArray<FSessionData> UEAGameInstance::FilterSessionData(bool publicMatch, FString Hostname)
 {
 	TArray<FSessionData> FilteredMatch;
+	
+	if (FoundSessions.IsEmpty())
+	{
+		return FilteredMatch;
+	}
+	
 	// TODO: Ask user if they want to create a public or private match and set that in Session Data with extra setting
 	// TODO: Get the list of friends from the logged in user if private was selected and search hostnames for friends and substring
 	return FilteredMatch;
@@ -52,12 +63,17 @@ TArray<FSessionData> UEAGameInstance::FilterSessionData(bool publicMatch, FStrin
 TArray<FSessionData> UEAGameInstance::SortSessionData()
 {
 	TArray<FSessionData> SortedMatch;
-	SortedMatch.Add(SessionData[0]);
+	if (FoundSessions.IsEmpty())
+	{
+		return SortedMatch;
+	}
+	
+	SortedMatch.Add(FoundSessions[0]);
 	FDateTime CurrentTime = FDateTime::Now();
-	for (int i = 1 ; i<SessionData.Num();i++)
+	for (int i = 1 ; i<FoundSessions.Num();i++)
 	{
 		FDateTime SessionDate;
-		FDateTime::Parse(SessionData[i].CreationTime,SessionDate);
+		FDateTime::Parse(FoundSessions[i].CreationTime,SessionDate);
 		FTimespan SessionAge = CurrentTime - SessionDate;
 		for(int j = 0 ; j < SortedMatch.Num(); j++)
 		{
@@ -67,14 +83,14 @@ TArray<FSessionData> UEAGameInstance::SortSessionData()
 
 			if(SessionAge < SortAge)
 			{
-				SortedMatch.Insert(SessionData[i],j);
+				SortedMatch.Insert(FoundSessions[i],j);
 				break;
 			}
 		}
 	}
 
 	UE_LOG(LogEANetworking, Log, TEXT("%hs -------------------------Session Data --------------------"), __FUNCTION__);
-	PrintSessionData(SessionData);
+	PrintSessionData(FoundSessions);
 	UE_LOG(LogEANetworking, Log, TEXT("%hs -------------------------Sorted Data --------------------"), __FUNCTION__);
 	PrintSessionData(SortedMatch);
 	
@@ -85,6 +101,11 @@ FString UEAGameInstance::GetDateTime()
 {
 	FDateTime DateTime;
 	return DateTime.Now().ToString();
+}
+
+void UEAGameInstance::SaveSteamSessionsFound(TArray<FSessionData> data)
+{
+	FoundSessions = data;
 }
 
 void UEAGameInstance::PrintSessionData (TArray<FSessionData> data)
