@@ -6,6 +6,7 @@
 #include <Player/EAPlayerState.h>
 
 #include "Core/EAGameInstance.h"
+#include "DSP/AudioDebuggingUtilities.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/EACharacter.h"
 
@@ -205,11 +206,11 @@ void AEAGameMode::Rollback(int InstigatorID, int TargetID)
 			if(It->PlayerInputID.InstigatorControllerID == TargetID)
 			{
 				UE_LOG(LogGameMode, Log, TEXT("Point of rollback found at index %d, for player controller id %d"), It.GetIndex(),InstigatorID);
-				if(It->InputType == EEAAbilityInput::PrimaryAttack)
-				{
-					Cast<AEACharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),InstigatorID))->ApplyEffectToSelf(Heal);
-					// Cast<AEACharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),TargetID))->ApplyEffectToSelf(Damage);
-				}
+				// Rollback the damage done to the player if they attacked first but was late due to network issues
+				Cast<AEACharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),InstigatorID))->ApplyEffectToSelf(GetRollbackHealthAmount(It->InputType));
+				Cast<AEACharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),InstigatorID))->RollbackAnimation(It->InputType,It->ClientPing);
+				UE_LOG(LogGameMode, Log, TEXT("%hs - Rollbacked the players health and animation"), __FUNCTION__);
+				
 			}
 		}
 	}
@@ -228,4 +229,33 @@ void AEAGameMode::OnGameWon(bool bIsTeamA)
 	{
 		
 	}
+}
+
+TSubclassOf<UGameplayEffect>  AEAGameMode::GetRollbackHealthAmount(EEAAbilityInput attackType)
+{
+	switch(attackType)
+	{
+	case EEAAbilityInput::PrimaryAttack:
+
+		return PrimaryHealth;
+		
+
+	case EEAAbilityInput::SecondaryAttack:
+
+		return SecondaryHealth;
+		
+
+	case EEAAbilityInput::UltimateAbility:
+		
+		return UltimateHealth;
+
+	case EEAAbilityInput::SimpleAbility:
+
+		return SimpleAbility;
+		
+	default:
+		return 0;
+	}
+	
+	
 }

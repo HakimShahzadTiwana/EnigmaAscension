@@ -75,7 +75,7 @@ protected:
 	TArray<TSubclassOf<class UGameplayEffect>> DefaultAttributeEffects;
 	UPROPERTY(BlueprintReadOnly,EditDefaultsOnly,Category="GAS|Defaults")
 	TArray<TSubclassOf<class UEAGameplayAbility>> DefaultAbilities;
-
+	bool isAnimPlaying = false;
 	bool bIsDead=false;
 protected:
 	virtual void GiveDefaultAbilities();
@@ -116,6 +116,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void PlayCharacterDeathMontage();
 	void SpawnCharacter();
+	void SkipAttackAnimation(UAnimMontage* AnimMontage,float ping);
+	void RollbackAnimation(EEAAbilityInput InputType,float ping);
 	UPROPERTY(BlueprintReadWrite)
 	FInputID CurrentInputID;
 

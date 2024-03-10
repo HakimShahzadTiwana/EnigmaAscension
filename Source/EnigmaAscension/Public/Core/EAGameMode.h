@@ -27,11 +27,19 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnGameWonSignature Notify_GameWon;
 	
+
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UGameplayEffect> Heal;
+	TSubclassOf<UGameplayEffect> PrimaryHealth;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGameplayEffect> SecondaryHealth;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGameplayEffect> SimpleAbility;
 	
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UGameplayEffect> Damage;
+	TSubclassOf<UGameplayEffect> UltimateHealth;
+	
 	
 	// FOnAttackTargetFound OnTargetFound;
 	FTimerHandle ServerTime;
@@ -80,6 +88,8 @@ public:
 
 	// Called By GameWon Delegate
 	void OnGameWon(bool bIsTeamA);
+
+	TSubclassOf<UGameplayEffect>  GetRollbackHealthAmount(EEAAbilityInput attackType);
 };
 
 

@@ -349,7 +349,45 @@ void AEACharacter::SpawnCharacter()
 	this->SetActorHiddenInGame(false);
 }
 
+void AEACharacter::SkipAttackAnimation(UAnimMontage* AnimMontage,float ping)
+{
+	if(isAnimPlaying)
+	{
+		AnimMontage->BlendOut = ping;
+	}
+	
+	
+}
 
+void AEACharacter::RollbackAnimation(EEAAbilityInput InputType,float ping)
+{
+	switch(InputType)
+	{
+		
+	case EEAAbilityInput::PrimaryAttack:
+
+		 SkipAttackAnimation(PrimaryAttackMontage,ping);
+		 break;
+
+	case EEAAbilityInput::SecondaryAttack:
+
+		 SkipAttackAnimation(SecondaryAttackMontage,ping);
+		 break;
+
+	case EEAAbilityInput::UltimateAbility:
+		
+		SkipAttackAnimation(UltimateAbilityMontage,ping);
+		break;
+		
+	case EEAAbilityInput::SimpleAbility:
+
+		SkipAttackAnimation(SimpleAbilityMontage,ping);
+		break;
+
+	default:
+		break;
+	}
+}
 
 void AEACharacter::Server_PickupSupportItem_Implementation(AEASupportItemBase* Item)
 {
