@@ -9,12 +9,6 @@
 /**
  * 
  */
-UENUM(BlueprintType)
-enum class UEACharacters : uint8
-{
-	Countess UMETA(DisplayName="Countess"),
-	GreyStone UMETA(DisplayName="GreyStone"),
-  };
 
 UCLASS()
 class ENIGMAASCENSION_API UEACharactersEnum : public UUserDefinedEnum

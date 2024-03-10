@@ -17,6 +17,16 @@ class UEAAbilitySystemComponent;
 class UEAAttributeSet;
 class UEAGameplayAbility;
 class UGameplayEffect;
+
+UENUM(BlueprintType)
+enum class UEACharacters : uint8
+{
+	Countess UMETA(DisplayName="Countess"),
+	GreyStone UMETA(DisplayName="GreyStone"),
+	Sevarog UMETA(DisplayName="Sevarog"),
+	Steel UMETA(DisplayName="Steel"),
+  };
+
 UCLASS()
 class ENIGMAASCENSION_API AEACharacter : public ACharacter,public IAbilitySystemInterface
 {
