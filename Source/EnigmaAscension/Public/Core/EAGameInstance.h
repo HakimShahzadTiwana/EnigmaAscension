@@ -58,7 +58,7 @@ protected:
 	
 	//Using Advanced Session Interfaces in Child BP
 	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
-	void CreateSession();
+	void CreateSession(bool isPublic);
 	
 	//Using Advanced Session Interfaces in Child BP
 	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
