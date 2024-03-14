@@ -10,6 +10,9 @@
 #include "Networking/EASessionInterface.h"
 #include "EAGameInstance.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFriendsRetrieved);
+
+
 USTRUCT(BlueprintType)
 struct FSessionData
 {
@@ -72,10 +75,12 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	TArray<FSessionData> SearchSessionData(FString UserQuery);
 	TArray<FSessionData> SearchSessions(FString UserQuery,TArray<FSessionData> SessionsToSearch);
-	void ReadFriendListData();
-	void OnAllFriendsRead(int I, bool bArg, const FString& String, const FString& String1);
+	
 	UFUNCTION(BlueprintCallable)
 	TArray<FSessionData> FilterSessionData(bool publicMatch, FString Hostname);
+
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	int GetAge(FString CreationTime);
 
 	UFUNCTION(BlueprintCallable)
 	TArray<FSessionData> SortSessionData();
@@ -88,7 +93,14 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void SaveSteamSessionsFound(TArray<FSessionData> data);
 	
+
 	FOnReadFriendsListComplete OnReadFriends;
+	UPROPERTY(BlueprintAssignable)
+	FOnFriendsRetrieved OnFriendsRetrieved;
+	UFUNCTION(BlueprintCallable)
+	void ReadFriendListData();
+    void OnAllFriendsRead(int I, bool bArg, const FString& String, const FString& String1);
+	
 	// Display all matches that are made by friends.
 	TArray< TSharedRef<FOnlineFriend> > FriendList;
 	

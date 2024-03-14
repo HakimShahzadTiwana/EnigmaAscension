@@ -75,6 +75,11 @@ void UEAGameInstance::OnAllFriendsRead(int I, bool bArg, const FString& String, 
 	IOnlineFriendsPtr FriendsInterface = IOnlineSubsystem::Get()->GetFriendsInterface();
 	FriendsInterface->GetFriendsList(0,EFriendsLists::ToString((EFriendsLists::Default)),FriendList);
 	UE_LOG(LogCore, Log, TEXT("%hs - Stored Friends List"), __FUNCTION__);
+	for (auto F : FriendList)
+	{
+		UE_LOG(LogCore, Log, TEXT("%hs - %s"), __FUNCTION__,*F->GetRealName());
+	}
+	OnFriendsRetrieved.Broadcast();
 
 }
 
@@ -116,6 +121,17 @@ TArray<FSessionData> UEAGameInstance::FilterSessionData(bool publicMatch, FStrin
 
 
 	
+	
+}
+
+int UEAGameInstance::GetAge(FString CreationTime)
+{
+	FDateTime Date;
+	FDateTime CurrentTime = FDateTime::Now();
+	FDateTime::Parse(CreationTime,Date);
+	FTimespan SessionAge = CurrentTime - Date;
+
+	return SessionAge.GetMinutes();
 	
 }
 
