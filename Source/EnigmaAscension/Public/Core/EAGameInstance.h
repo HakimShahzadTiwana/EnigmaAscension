@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "OnlineSubsystem.h"
+#include "Interfaces/OnlineFriendsInterface.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Networking/EASessionInterface.h"
 #include "EAGameInstance.generated.h"
@@ -21,7 +22,8 @@ struct FSessionData
 	int MaxPlayers;
 	UPROPERTY(BlueprintReadWrite)
 	FString CreationTime;
-	
+	UPROPERTY(BlueprintReadWrite)
+	bool isPublic;
 };
 
 /**
@@ -69,7 +71,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	TArray<FSessionData> SearchSessionData(FString UserQuery);
-
+	TArray<FSessionData> SearchSessions(FString UserQuery,TArray<FSessionData> SessionsToSearch);
+	void ReadFriendListData();
+	void OnAllFriendsRead(int I, bool bArg, const FString& String, const FString& String1);
 	UFUNCTION(BlueprintCallable)
 	TArray<FSessionData> FilterSessionData(bool publicMatch, FString Hostname);
 
@@ -84,8 +88,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void SaveSteamSessionsFound(TArray<FSessionData> data);
 	
-	
-	
+	FOnReadFriendsListComplete OnReadFriends;
+	// Display all matches that are made by friends.
+	TArray< TSharedRef<FOnlineFriend> > FriendList;
 	
 	
 

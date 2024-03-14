@@ -26,15 +26,15 @@ void UEAGameInstance::SetRollBack(bool bIsRollback)
 	bIsRollbackSet=bIsRollback;
 }
 
-TArray<FSessionData> UEAGameInstance::SearchSessionData(FString UserQuery)
+TArray<FSessionData> UEAGameInstance::SearchSessions(FString UserQuery,TArray<FSessionData> SessionsToSearch)
 {
 	TArray<FSessionData> SearchedSessionData;
-	if (FoundSessions.IsEmpty())
+	if (SessionsToSearch.IsEmpty())
 	{
 		return SearchedSessionData;
 	}
 	
-	for (auto data : FoundSessions)
+	for (auto data : SessionsToSearch)
 	{
 		if(data.Name.Contains(UserQuery))
 		{
@@ -46,18 +46,77 @@ TArray<FSessionData> UEAGameInstance::SearchSessionData(FString UserQuery)
 	return SearchedSessionData;
 }
 
+void UEAGameInstance::ReadFriendListData()
+{
+	//Read friends first
+	IOnlineFriendsPtr FriendsInterface = IOnlineSubsystem::Get()->GetFriendsInterface();
+	if(FriendsInterface == nullptr)
+	{
+		UE_LOG(LogCore, Error, TEXT("%hs - Couldnt find Friends Interface"), __FUNCTION__);
+		return;
+	}
+	if(FriendsInterface->ReadFriendsList(0,EFriendsLists::ToString((EFriendsLists::Default)),OnReadFriends.CreateUObject(this,&UEAGameInstance::OnAllFriendsRead)))
+	{
+		UE_LOG(LogCore, Log, TEXT("%hs - Reading Friends List..."), __FUNCTION__);
+	}else
+	{
+		UE_LOG(LogCore, Warning, TEXT("%hs - Couldnt read friend list..."), __FUNCTION__);
+	}
+}
+
+
+TArray<FSessionData> UEAGameInstance::SearchSessionData(FString UserQuery)
+{
+	return SearchSessions(UserQuery,FoundSessions);
+}
+
+void UEAGameInstance::OnAllFriendsRead(int I, bool bArg, const FString& String, const FString& String1)
+{
+	IOnlineFriendsPtr FriendsInterface = IOnlineSubsystem::Get()->GetFriendsInterface();
+	FriendsInterface->GetFriendsList(0,EFriendsLists::ToString((EFriendsLists::Default)),FriendList);
+	UE_LOG(LogCore, Log, TEXT("%hs - Stored Friends List"), __FUNCTION__);
+
+}
+
 TArray<FSessionData> UEAGameInstance::FilterSessionData(bool publicMatch, FString Hostname)
 {
 	TArray<FSessionData> FilteredMatch;
-	
-	if (FoundSessions.IsEmpty())
+
+	// Get matches that are public/private first
+	for (auto Match : FoundSessions)
 	{
-		return FilteredMatch;
+		if(Match.isPublic == publicMatch)
+		{
+			FilteredMatch.Add(Match);
+		}
 	}
-	
-	// TODO: Ask user if they want to create a public or private match and set that in Session Data with extra setting
-	// TODO: Get the list of friends from the logged in user if private was selected and search hostnames for friends and substring
+
+	// Out of the filtered Matches, get the ones that are similar to the host name
+	if(!Hostname.IsEmpty())
+	{
+		FilteredMatch = SearchSessions(Hostname,FilteredMatch);
+	}
+
+	if(!publicMatch && !FriendList.IsEmpty())
+	{
+		TArray<FSessionData> FinalFilter;
+		for (auto Friend : FriendList)
+		{
+			TArray<FSessionData> FriendSessions = SearchSessions(Friend->GetRealName(),FilteredMatch);
+			if(FriendSessions.Num() > 0)
+			{
+				FinalFilter.Append(FriendSessions);
+			}
+		}
+		FilteredMatch = FinalFilter;
+	}
+
 	return FilteredMatch;
+		
+
+
+	
+	
 }
 
 TArray<FSessionData> UEAGameInstance::SortSessionData()
