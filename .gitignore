@@ -84,5 +84,6 @@ Content/EnvironmentPack2/*
 
 # Developer Settings
 Plugins/Developer/*
+Backups/
 # For Difference in Source & Binary
 EnigmaAscension.uproject
