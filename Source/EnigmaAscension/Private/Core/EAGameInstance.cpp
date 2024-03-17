@@ -153,8 +153,8 @@ TArray<FSessionData> UEAGameInstance::SortSessionData()
 		for(int j = 0 ; j < SortedMatch.Num(); j++)
 		{
 			FDateTime SortDate;
-			FDateTime::Parse(SortedMatch[i].CreationTime,SortDate);
-			FTimespan SortAge = CurrentTime - CurrentTime;
+			FDateTime::Parse(SortedMatch[j].CreationTime,SortDate);
+			FTimespan SortAge = CurrentTime - SortDate;
 
 			if(SessionAge < SortAge)
 			{
