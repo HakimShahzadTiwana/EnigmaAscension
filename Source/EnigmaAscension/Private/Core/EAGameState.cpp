@@ -98,6 +98,8 @@ TArray<FPlayerStatistics> AEAGameState::GetPlayerStatistics()
 	TArray<FPlayerStatistics> PlayerStats;
 	for (auto Player : PlayerArray)
 	{
+		//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue, FString::Printf(TEXT("Player is : %s"),*Player.GetFullName()));
+		UE_LOG(LogGameState, Log, TEXT("%hs - PLayer stats for %s"), __FUNCTION__,*Player->GetPlayerName());
 		PlayerStats.Add(Cast<AEAPlayerState>(Player)->Stats);
 	}
 

@@ -17,7 +17,7 @@ AEAPlayerState::AEAPlayerState()
 void AEAPlayerState::BeginPlay()
 {
 	Super::BeginPlay();
-	Stats.PlayerName = GetPlayerName();
+	
 }
 
 int AEAPlayerState::GetPlayerIndex() const
