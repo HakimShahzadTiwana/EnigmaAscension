@@ -87,3 +87,5 @@ Plugins/Developer/*
 Backups/
 # For Difference in Source & Binary
 EnigmaAscension.uproject
+Packaged
+EnigmaAscension.uproject
