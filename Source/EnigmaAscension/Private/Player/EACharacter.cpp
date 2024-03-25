@@ -297,7 +297,8 @@ void AEACharacter::HandleUltimateAbility_Implementation()
 void AEACharacter::SendGameplayEventFromHit(FGameplayTag EventTag, float AttackRadius)
 {
 	FVector SocketLocation=GetMesh()->GetSocketLocation(AttackSocketName);
-	//DrawDebugSphere(GetWorld(),SocketLocation,AttackRadius,12,FColor::Blue,false,5,0,2);
+	// TODO: Disable Debug Sphere
+	DrawDebugSphere(GetWorld(),SocketLocation,AttackRadius,12,FColor::Blue,false,5,0,2);
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
 	TArray<AActor*> ActorsToIgnore;
