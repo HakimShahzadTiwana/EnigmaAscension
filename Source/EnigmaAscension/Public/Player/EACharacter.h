@@ -60,7 +60,12 @@ protected:
 	float SimpleAbilityRadius=75;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="GAS|Abilities|AttackRadius")
 	float UltimateAbilityRadius=300;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="GAS|Abilities|JumpAttacks")
+	float UltimateAbility_JumpVelocity = 300 ;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="GAS|Abilities|JumpAttacks")
+	float UltimateAbility_JumpGravityScale = 1; 
 
+	
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="GAS|Abilities|AttackMontages")
 	UAnimMontage* PrimaryAttackMontage;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="GAS|Abilities|AttackMontages")
@@ -71,6 +76,8 @@ protected:
 	UAnimMontage* UltimateAbilityMontage;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="GAS|DeathMontage")
 	UAnimMontage* DeathMontage;
+
+	
 	
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="GAS|Abilities|AttackSocket")
 	FName AttackSocketName = "Sword_Top";
