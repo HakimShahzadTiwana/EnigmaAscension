@@ -67,19 +67,16 @@ void AEAGameMode::Tick(float DeltaSeconds)
 
 void AEAGameMode::AddInputToBuffer(const FPlayerInputData& Data)
 {
-	// int ClientFrames, int InstigatorID, EEAAbilityInput InputType, int TargetID, float timestamp, float ping
-	// UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer"));
-	// UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer - Server Current Time is : %d"),ServerTimeInMs);
-	// UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer - Client Ping is : %d"), Data.ClientPing);
+	
 	int RewindIndex = InputBuffer.Num()-1-(Data.ClientPing/2);
-//	UE_LOG(LogGameMode, Log, TEXT("AEAGameMode::AddInputToBuffer -Inserting Sent data to Index : %d"),RewindIndex);
+
 	if (RewindIndex>0 && RewindIndex<InputBuffer.Num())
 	{
 		InputBuffer[RewindIndex] = Data;
 	}
 	else
 	{
-	//	UE_LOG(LogGameMode, Warning, TEXT("%hs - Rewind Index out of bounds : %d"), __FUNCTION__,RewindIndex);
+	
 		return;
 
 	}
@@ -211,8 +208,8 @@ void AEAGameMode::Rollback(int InstigatorID, int TargetID)
 				UE_LOG(LogGameMode, Log, TEXT("Point of rollback found at index %d, for player controller id %d"), It.GetIndex(),InstigatorID);
 				// Rollback the damage done to the player if they attacked first but was late due to network issues
 				Cast<AEACharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),InstigatorID))->ApplyEffectToSelf(GetRollbackHealthAmount(It->InputType));
-				Cast<AEACharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),InstigatorID))->RollbackAnimation(It->InputType,It->ClientPing);
 				UE_LOG(LogGameMode, Log, TEXT("%hs - Rollbacked the players health and animation"), __FUNCTION__);
+				Cast<AEACharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),InstigatorID))->RollbackAnimation(It->InputType,It->ClientPing);
 				
 			}
 		}

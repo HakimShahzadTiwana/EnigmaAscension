@@ -4,6 +4,7 @@
 #include "Core/EAGameInstance.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
+#include "Algo/RandomShuffle.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Interfaces/OnlineFriendsInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -83,6 +84,36 @@ void UEAGameInstance::OnAllFriendsRead(int I, bool bArg, const FString& String, 
 
 }
 
+void UEAGameInstance::TestSorting()
+{
+	// Generate 15 entries
+	for (int i = 0; i < 15; i++)
+	{
+		FSessionData Data;
+
+		// Assign dummy values
+		Data.Name = FString::Printf(TEXT("Session %d"), i + 1);
+		Data.CurrentPlayers = FMath::RandRange(0, 10); // Random number of current players (0-10)
+		Data.MaxPlayers = FMath::RandRange(5, 20); // Random number of max players (5-20)
+
+		FTimespan RandomDelta = FTimespan::FromMinutes(FMath::RandRange(-15, 15)) + FTimespan::FromSeconds(FMath::RandRange(-59, 59));
+
+		// Calculate the creation time as the current time plus the random delta
+		FDateTime CurrentTime = FDateTime::Now();
+		FDateTime _CreationTime = CurrentTime + RandomDelta;
+		Data.CreationTime = _CreationTime.ToString(); // Current time as creation time
+		
+		Data.isPublic = FMath::RandBool(); // Random true/false for isPublic
+
+		// Add to the array
+		FoundSessions.Add(Data);
+	}
+
+	Algo::RandomShuffle(FoundSessions);
+	SortSessionData();
+	LoadSortingTest();
+}
+
 TArray<FSessionData> UEAGameInstance::FilterSessionData(bool publicMatch, FString Hostname)
 {
 	TArray<FSessionData> FilteredMatch;
@@ -131,7 +162,7 @@ int UEAGameInstance::GetAge(FString CreationTime)
 	FDateTime::Parse(CreationTime,Date);
 	FTimespan SessionAge = CurrentTime - Date;
 
-	return SessionAge.GetMinutes();
+	return SessionAge.GetTotalSeconds();
 	
 }
 
@@ -144,26 +175,35 @@ TArray<FSessionData> UEAGameInstance::SortSessionData()
 	}
 	
 	SortedMatch.Add(FoundSessions[0]);
-	FDateTime CurrentTime = FDateTime::Now();
 	for (int i = 1 ; i<FoundSessions.Num();i++)
 	{
-		FDateTime SessionDate;
-		FDateTime::Parse(FoundSessions[i].CreationTime,SessionDate);
-		FTimespan SessionAge = CurrentTime - SessionDate;
+		bool inserted = false;
+		int SessionAge = GetAge(FoundSessions[i].CreationTime);
 		for(int j = 0 ; j < SortedMatch.Num(); j++)
 		{
-			FDateTime SortDate;
-			FDateTime::Parse(SortedMatch[j].CreationTime,SortDate);
-			FTimespan SortAge = CurrentTime - SortDate;
-
-			if(SessionAge < SortAge)
+			int SortAge = GetAge(SortedMatch[j].CreationTime);
+			
+			if(SessionAge <= SortAge)
 			{
 				SortedMatch.Insert(FoundSessions[i],j);
+				UE_LOG(LogEANetworking, Log, TEXT("%hs - Inserted Match %s (Age : %d) at index %d"), __FUNCTION__,*FoundSessions[i].Name,SessionAge,j);
+				UE_LOG(LogEANetworking, Log, TEXT("%hs -------------------------Sorted Data --------------------"), __FUNCTION__);
+				PrintSessionData(SortedMatch);
+				inserted = true;
 				break;
 			}
 		}
+		if(!inserted)
+		{
+			SortedMatch.Add(FoundSessions[i]);
+			UE_LOG(LogEANetworking, Log, TEXT("%hs - Inserted Match %s (Age : %d) at index %d"), __FUNCTION__,*FoundSessions[i].Name,SessionAge,SortedMatch.Num());
+			UE_LOG(LogEANetworking, Log, TEXT("%hs -------------------------Sorted Data --------------------"), __FUNCTION__);
+			PrintSessionData(SortedMatch);
+		}
 	}
 
+
+	UE_LOG(LogEANetworking, Log, TEXT("%hs -------------------------Sort Completed--------------------"), __FUNCTION__);
 	UE_LOG(LogEANetworking, Log, TEXT("%hs -------------------------Session Data --------------------"), __FUNCTION__);
 	PrintSessionData(FoundSessions);
 	UE_LOG(LogEANetworking, Log, TEXT("%hs -------------------------Sorted Data --------------------"), __FUNCTION__);

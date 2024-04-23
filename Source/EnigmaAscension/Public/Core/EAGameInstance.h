@@ -103,7 +103,14 @@ protected:
 	
 	// Display all matches that are made by friends.
 	TArray< TSharedRef<FOnlineFriend> > FriendList;
-	
+
+
+	// Testing 
+	UFUNCTION(Exec)
+	void TestSorting();
+
+	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
+	void LoadSortingTest();
 	
 
 	
