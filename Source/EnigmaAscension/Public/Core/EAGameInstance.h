@@ -26,6 +26,8 @@ struct FSessionData
 	UPROPERTY(BlueprintReadWrite)
 	FString CreationTime;
 	UPROPERTY(BlueprintReadWrite)
+	FString SessionPassword;
+	UPROPERTY(BlueprintReadWrite)
 	bool isPublic;
 };
 
@@ -63,7 +65,7 @@ protected:
 	
 	//Using Advanced Session Interfaces in Child BP
 	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
-	void CreateSession(bool isPublic);
+	void CreateSession(bool isPublic,const FString &Password);
 	
 	//Using Advanced Session Interfaces in Child BP
 	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)

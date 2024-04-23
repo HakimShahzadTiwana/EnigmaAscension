@@ -105,6 +105,7 @@ void UEAGameInstance::TestSorting()
 		
 		Data.isPublic = FMath::RandBool(); // Random true/false for isPublic
 
+		Data.SessionPassword = FString::Printf(TEXT("Password_%d"), i + 1);
 		// Add to the array
 		FoundSessions.Add(Data);
 	}
