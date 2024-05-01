@@ -51,7 +51,9 @@ protected:
 	FGameplayTag SimpleAbilityTag;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="GAS|Abilities|Tags")
 	FGameplayTag UltimateAbilityTag;
-
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="GAS|Abilities|Tags")
+	FGameplayTag BlockAbilityTag;
+	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="GAS|Abilities|AttackRadius")
 	float PrimaryAttackRadius=75;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="GAS|Abilities|AttackRadius")
@@ -76,7 +78,8 @@ protected:
 	UAnimMontage* UltimateAbilityMontage;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="GAS|DeathMontage")
 	UAnimMontage* DeathMontage;
-
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="GAS|Abilities|OtherMontages")
+	UAnimMontage* BlockAbilityMontage;
 	
 	
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="GAS|Abilities|AttackSocket")

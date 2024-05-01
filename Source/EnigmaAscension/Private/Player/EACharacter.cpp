@@ -36,6 +36,7 @@ AEACharacter::AEACharacter()
 	SecondaryAttackTag = UGameplayTagsManager::Get().RequestGameplayTag("Player.Attack.Secondary");
 	SimpleAbilityTag = UGameplayTagsManager::Get().RequestGameplayTag("Player.Ability.Simple");
 	UltimateAbilityTag = UGameplayTagsManager::Get().RequestGameplayTag("Player.Ability.Ultimate");
+	BlockAbilityTag = UGameplayTagsManager::Get().RequestGameplayTag("Abilities.Block");
 }
 
 // Called when the game starts or when spawned

@@ -17,5 +17,6 @@ enum class EEAAbilityInput : uint8
 	PrimaryAttack UMETA(DisplayName = "PrimaryAttack"),
 	SecondaryAttack UMETA(DisplayName = "SecondaryAttack"),
 	SimpleAbility UMETA(DisplayName = "SimpleAbility"),
-	UltimateAbility UMETA(DisplayName = "UltimateAbility")
+	UltimateAbility UMETA(DisplayName = "UltimateAbility"),
+	BlockAbility UMETA(DisplayName = "BlockAbility")
 };
