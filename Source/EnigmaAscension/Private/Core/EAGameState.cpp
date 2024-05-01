@@ -85,11 +85,11 @@ void AEAGameState::OnRep_ScoreTeamB()
 	Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0))->PlayerHUD->UpdateTeamScore(false,ScoreTeamB);
 }
 
-void AEAGameState::OnRep_Timer()
-{
-	UE_LOG(LogGameMode, Log, TEXT("%hs"), __FUNCTION__);
-	Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0))->PlayerHUD->UpdateTimer(Current_Timer);
-}
+// void AEAGameState::OnRep_Timer()
+// {
+// 	UE_LOG(LogGameMode, Log, TEXT("%hs"), __FUNCTION__);
+// 	Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0))->PlayerHUD->UpdateTimer(Current_Timer);
+// }
 
 void AEAGameState::BeginPlay()
 {
@@ -129,10 +129,13 @@ void AEAGameState::DecrementTimer_Implementation()
 {
 	Current_Timer--;
 	UE_LOG(LogGameState, Log, TEXT("%hs - Current Time: %d"), __FUNCTION__,Current_Timer);
-	if(GetNetMode() == NM_Client || NM_ListenServer){
-		UE_LOG(LogGameState, Log, TEXT("%hs - Caller: %d"), __FUNCTION__);
-		Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0))->PlayerHUD->UpdateTimer(Current_Timer);
+
+	UE_LOG(LogGameState, Log, TEXT("%hs - Caller: %d"), __FUNCTION__);
+	
+	for (int i = 0; i < UGameplayStatics::GetNumPlayerControllers(GetWorld()); i++){
+		Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),i))->Client_TimerUI(Current_Timer);
 	}
+	
 	if (Current_Timer <= 0)
 	{
 		// Stop the timer if Current_Timer has reached 0

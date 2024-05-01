@@ -50,7 +50,7 @@ public:
 	UTextBlock* TeamA_Score;
 	UPROPERTY(EditAnywhere,meta=(BindWidget))
 	UTextBlock* TeamB_Score;
-	UPROPERTY(EditAnywhere,meta=(BindWidget))
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,meta=(BindWidget))
 	UTextBlock* Timer_Text;
 	
 	bool bIsLobbyListUpdated = false;
@@ -72,6 +72,4 @@ public:
 	void UpdateTeamScore(bool bIsTeamA, int Score);
 	UFUNCTION(Client,Reliable)
 	void UpdateTimer(int time);
-	
-	
 };

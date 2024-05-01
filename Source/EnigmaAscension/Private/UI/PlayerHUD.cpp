@@ -109,7 +109,7 @@ void UPlayerHUD::UpdateTimer_Implementation(int time)
 	// Calculate minutes and seconds
 	int minutes = time / 60;
 	int seconds = time % 60;
-	
+	FString final_text = minutes + ":" + seconds;
 	// Update UI text
 	Timer_Text->SetText(FText::FromString(FString::Printf(TEXT("%02d:%02d"), minutes, seconds)));
 }

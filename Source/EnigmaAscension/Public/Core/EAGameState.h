@@ -24,7 +24,7 @@ public:
 	int ScoreTeamB=0;
 	UPROPERTY(BlueprintReadOnly)
 	int ScoreLimit = 3; // TODO: Make this Const
-	UPROPERTY(BlueprintReadOnly,ReplicatedUsing = OnRep_Timer)
+	UPROPERTY(BlueprintReadOnly,Replicated)
 	int Current_Timer = 120; // in seconds
 	FTimerHandle TimerHandle_DecrementTimer;
 	
@@ -34,8 +34,8 @@ public:
 	virtual void OnRep_ScoreTeamA();
 	UFUNCTION()
 	virtual void OnRep_ScoreTeamB();
-	UFUNCTION()
-	virtual void OnRep_Timer();
+	// UFUNCTION()
+	// virtual void OnRep_Timer();
 	UFUNCTION(Server,Reliable)
 	void Server_IncrementTeamScore(bool bIsTeamA);
 	UFUNCTION()

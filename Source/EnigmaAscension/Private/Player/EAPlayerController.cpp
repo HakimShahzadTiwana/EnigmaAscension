@@ -285,6 +285,11 @@ void AEAPlayerController::OnPossess(APawn* InPawn)
 	UE_LOG(LogTemp,Log,TEXT("AEAPlayerController::OnPossess"));
 }
 
+void AEAPlayerController::Client_TimerUI_Implementation(int time)
+{
+	PlayerHUD->UpdateTimer(time);
+}
+
 void AEAPlayerController::Open_GameWonUI(bool bTeamAWon)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Blue, FString::Printf(TEXT("Game Won!")));
