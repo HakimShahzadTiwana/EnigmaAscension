@@ -24,15 +24,27 @@ public:
 	int ScoreTeamB=0;
 	UPROPERTY(BlueprintReadOnly)
 	int ScoreLimit = 3; // TODO: Make this Const
+	UPROPERTY(BlueprintReadOnly,ReplicatedUsing = OnRep_Timer)
+	int Current_Timer = 120; // in seconds
+	FTimerHandle TimerHandle_DecrementTimer;
+	
 	UFUNCTION()
 	virtual void OnRep_GameStarted();
 	UFUNCTION()
 	virtual void OnRep_ScoreTeamA();
 	UFUNCTION()
 	virtual void OnRep_ScoreTeamB();
-
+	UFUNCTION()
+	virtual void OnRep_Timer();
 	UFUNCTION(Server,Reliable)
 	void Server_IncrementTeamScore(bool bIsTeamA);
+	UFUNCTION()
+	virtual void BeginPlay() override;
+	UFUNCTION(Server,Reliable)
+	void Server_BeginTimer();
+	UFUNCTION(NetMulticast,Reliable)
+	void DecrementTimer();
+	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)

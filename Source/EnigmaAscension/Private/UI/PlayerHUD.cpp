@@ -3,6 +3,8 @@
 
 #include "UI/PlayerHUD.h"
 
+#include "Core/EAGameMode.h"
+#include "Core/EAGameState.h"
 #include "Kismet/GameplayStatics.h"
 
 void UPlayerHUD::SetHealth(float CurrentHealth, float MaxHealth)
@@ -90,24 +92,41 @@ void UPlayerHUD::HostStartGame()
 {
 	Canvas_InGame->SetVisibility(ESlateVisibility::Visible);
 	Canvas_Lobby->SetVisibility(ESlateVisibility::Collapsed);
-	 UGameplayStatics::GetPlayerController(GetWorld(),0)->SetShowMouseCursor(false);
-	 FInputModeGameOnly GameOnly;
-	 UGameplayStatics::GetPlayerController(GetWorld(),0)->SetInputMode(GameOnly);
+	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetShowMouseCursor(false);
+	FInputModeGameOnly GameOnly;
+	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetInputMode(GameOnly);
 	
+	AEAGameState *_gameState = Cast<AEAGameState>(UGameplayStatics::GetGameState(GetWorld()));
+	if(IsValid(_gameState) && GetWorld()->GetNetMode() == NM_ListenServer || NM_DedicatedServer){
+		_gameState->Server_BeginTimer_Implementation();
+	}
 }
+
+void UPlayerHUD::UpdateTimer_Implementation(int time)
+{
+	UE_LOG(LogCore, Log, TEXT("%s - Updating UI for Timer"), *FString(__FUNCTION__));
+    
+	// Calculate minutes and seconds
+	int minutes = time / 60;
+	int seconds = time % 60;
+	
+	// Update UI text
+	Timer_Text->SetText(FText::FromString(FString::Printf(TEXT("%02d:%02d"), minutes, seconds)));
+}
+
 
 void UPlayerHUD::UpdateTeamScore_Implementation(bool bIsTeamA, int Score)
 {
 	if(bIsTeamA)
 	{
-		UE_LOG(LogCore, Log, TEXT("%hs - Updatinh UI for Team A"), __FUNCTION__);
+		UE_LOG(LogCore, Log, TEXT("%hs - Updating UI for Team A"), __FUNCTION__);
 
 		TeamA_Score->SetText(FText::FromString(FString::FromInt(Score)));
 		
 	}
 	else
 	{
-		UE_LOG(LogCore, Log, TEXT("%hs - Updatinh UI for Team B"), __FUNCTION__);
+		UE_LOG(LogCore, Log, TEXT("%hs - Updating UI for Team B"), __FUNCTION__);
 		TeamB_Score->SetText(FText::FromString(FString::FromInt(Score)));
 	}
 

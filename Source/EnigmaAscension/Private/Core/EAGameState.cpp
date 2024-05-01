@@ -85,12 +85,24 @@ void AEAGameState::OnRep_ScoreTeamB()
 	Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0))->PlayerHUD->UpdateTeamScore(false,ScoreTeamB);
 }
 
+void AEAGameState::OnRep_Timer()
+{
+	UE_LOG(LogGameMode, Log, TEXT("%hs"), __FUNCTION__);
+	Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0))->PlayerHUD->UpdateTimer(Current_Timer);
+}
+
+void AEAGameState::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
 void AEAGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AEAGameState,bGameStarted);
 	DOREPLIFETIME(AEAGameState,ScoreTeamA);
 	DOREPLIFETIME(AEAGameState,ScoreTeamB);
+	DOREPLIFETIME(AEAGameState,Current_Timer);
 }
 
 TArray<FPlayerStatistics> AEAGameState::GetPlayerStatistics()
@@ -104,4 +116,31 @@ TArray<FPlayerStatistics> AEAGameState::GetPlayerStatistics()
 	}
 
 	return PlayerStats;
+}
+
+void AEAGameState::Server_BeginTimer_Implementation()
+{
+	// Start a timer to decrement Current_Timer every second
+	UE_LOG(LogGameState, Log, TEXT("%hs"), __FUNCTION__);
+	GetWorldTimerManager().SetTimer(TimerHandle_DecrementTimer, this, &AEAGameState::DecrementTimer_Implementation, 1.0f, true);
+}
+
+void AEAGameState::DecrementTimer_Implementation()
+{
+	Current_Timer--;
+	UE_LOG(LogGameState, Log, TEXT("%hs - Current Time: %d"), __FUNCTION__,Current_Timer);
+	if(GetNetMode() == NM_Client || NM_ListenServer){
+		UE_LOG(LogGameState, Log, TEXT("%hs - Caller: %d"), __FUNCTION__);
+		Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0))->PlayerHUD->UpdateTimer(Current_Timer);
+	}
+	if (Current_Timer <= 0)
+	{
+		// Stop the timer if Current_Timer has reached 0
+		GetWorldTimerManager().ClearTimer(TimerHandle_DecrementTimer);
+
+		AEAGameMode *_gameMode = Cast<AEAGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		if(IsValid(_gameMode)){
+			_gameMode->Notify_GameWon.Broadcast(ScoreTeamA > ScoreTeamB);
+		}
+	}
 }

@@ -50,6 +50,8 @@ public:
 	UTextBlock* TeamA_Score;
 	UPROPERTY(EditAnywhere,meta=(BindWidget))
 	UTextBlock* TeamB_Score;
+	UPROPERTY(EditAnywhere,meta=(BindWidget))
+	UTextBlock* Timer_Text;
 	
 	bool bIsLobbyListUpdated = false;
 	UFUNCTION()
@@ -68,6 +70,8 @@ public:
 	void HostStartGame();
 	UFUNCTION(Client,Reliable)
 	void UpdateTeamScore(bool bIsTeamA, int Score);
+	UFUNCTION(Client,Reliable)
+	void UpdateTimer(int time);
 	
 	
 };
