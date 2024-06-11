@@ -13,11 +13,13 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayEffectExtension.h"
 #include "GameplayTagsManager.h"
+#include "Components/WidgetComponent.h"
 #include "Core/EAGameMode.h"
 #include "Core/EAGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/EAPlayerController.h"
 #include "SupportItems/EASupportItemBase.h"
+#include "UI/EAPlayerTagWidget.h"
 
 // Sets default values
 AEACharacter::AEACharacter()
@@ -37,6 +39,10 @@ AEACharacter::AEACharacter()
 	SimpleAbilityTag = UGameplayTagsManager::Get().RequestGameplayTag("Player.Ability.Simple");
 	UltimateAbilityTag = UGameplayTagsManager::Get().RequestGameplayTag("Player.Ability.Ultimate");
 	BlockAbilityTag = UGameplayTagsManager::Get().RequestGameplayTag("Abilities.Block");
+
+	PlayerTagWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerTagWidget"));
+	PlayerTagWidget->SetupAttachment(RootComponent);
+	
 }
 
 // Called when the game starts or when spawned
@@ -48,14 +54,12 @@ void AEACharacter::BeginPlay()
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue,FString::Printf(TEXT("PrimaryAttackTag is : %s"),*PrimaryAttackTag.ToString()));
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetStaminaAttribute()).AddUObject(this, &AEACharacter::OnStaminaChanged);
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetManaAttribute()).AddUObject(this, &AEACharacter::OnManaChanged);
-
 }
 
 // Called every frame
 void AEACharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -70,6 +74,7 @@ void AEACharacter::PossessedBy(AController* NewController)
 {
 	UE_LOG(LogGAS,Log,TEXT("AEACharacter::PossessedBy()"));
 	Super::PossessedBy(NewController);
+	// PlayerTagWidget->SetWidgetClass(BP_PlayerTagWidget->GetClass());
 	//Server GAS Init
 	if(IsValid(AbilitySystemComponent) && IsValid(AttributeSet))
 	{
@@ -77,6 +82,17 @@ void AEACharacter::PossessedBy(AController* NewController)
 		InitializeAttributes();
 		//Only server should give the abilities
 		GiveDefaultAbilities();
+		UEAPlayerTagWidget* TagWidget = Cast<UEAPlayerTagWidget>(PlayerTagWidget->GetWidget());
+		if(IsValid(TagWidget))
+		{
+			
+			AEAPlayerState* LocalPlayerState = Controller->GetPlayerState<AEAPlayerState>();
+			TagWidget->SetPlayerTagProperties(LocalPlayerState->GetPlayerName(),LocalPlayerState->bIsTeamA);
+			//TagWidget->SetPlayerTagProperties(FString("Faraz Majid"),true);
+		}else
+		{
+			UE_LOG(LogGAS,Warning,TEXT("AEACharacter::Unable to Cast UUserWidget to UEAPlayerTagWidget"));
+		}
 	}
 	else
 	{

@@ -8,6 +8,7 @@
 #include "EAPlayerController.h"
 #include "GameplayEffectTypes.h"
 #include "GameplayTagContainer.h"
+#include "Components/WidgetComponent.h"
 #include "UI/PlayerHUD.h"
 #include "EACharacter.generated.h"
 
@@ -95,6 +96,13 @@ protected:
 	TArray<TSubclassOf<class UGameplayEffect>> DefaultAttributeEffects;
 	UPROPERTY(BlueprintReadOnly,EditDefaultsOnly,Category="GAS|Defaults")
 	TArray<TSubclassOf<class UEAGameplayAbility>> DefaultAbilities;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "UI")
+	UWidgetComponent* PlayerTagWidget;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "UI")
+	UUserWidget* BP_PlayerTagWidget;
+	
 	bool isAnimPlaying = false;
 	bool bIsDead=false;
 protected:
