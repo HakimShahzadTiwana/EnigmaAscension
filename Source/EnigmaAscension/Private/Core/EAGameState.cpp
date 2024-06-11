@@ -127,12 +127,14 @@ void AEAGameState::Server_BeginTimer_Implementation()
 
 void AEAGameState::DecrementTimer_Implementation()
 {
+	LogClientOrServer();
 	Current_Timer--;
 	UE_LOG(LogGameState, Log, TEXT("%hs - Current Time: %d"), __FUNCTION__,Current_Timer);
 
 	UE_LOG(LogGameState, Log, TEXT("%hs - Caller: %d"), __FUNCTION__);
-	
+	//TODO: Call this from GameMode 
 	for (int i = 0; i < UGameplayStatics::GetNumPlayerControllers(GetWorld()); i++){
+		UE_LOG(LogGameState, Log, TEXT("%hs - Num Player Controllers %d"), __FUNCTION__,UGameplayStatics::GetNumPlayerControllers(GetWorld()));
 		Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),i))->Client_TimerUI(Current_Timer);
 	}
 	
@@ -145,5 +147,39 @@ void AEAGameState::DecrementTimer_Implementation()
 		if(IsValid(_gameMode)){
 			_gameMode->Notify_GameWon.Broadcast(ScoreTeamA > ScoreTeamB);
 		}
+	}
+}
+
+void  AEAGameState::LogClientOrServer()
+{
+	// Check if this instance has authority (is the server or standalone game)
+	if (HasAuthority())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("This is the Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("This is the Client"));
+	}
+
+	// Check the network mode explicitly
+	ENetMode NetMode = GetNetMode();
+	switch (NetMode)
+	{
+	case NM_Standalone:
+		UE_LOG(LogTemp, Warning, TEXT("Running in Standalone mode"));
+		break;
+	case NM_Client:
+		UE_LOG(LogTemp, Warning, TEXT("Running on a Client"));
+		break;
+	case NM_ListenServer:
+		UE_LOG(LogTemp, Warning, TEXT("Running as a Listen Server"));
+		break;
+	case NM_DedicatedServer:
+		UE_LOG(LogTemp, Warning, TEXT("Running as a Dedicated Server"));
+		break;
+	default:
+		UE_LOG(LogTemp, Warning, TEXT("Unknown network mode"));
+		break;
 	}
 }

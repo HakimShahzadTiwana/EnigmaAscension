@@ -90,6 +90,9 @@ public:
 	void OnGameWon(bool bIsTeamA);
 
 	TSubclassOf<UGameplayEffect>  GetRollbackHealthAmount(EEAAbilityInput attackType);
+
+	UFUNCTION(BlueprintCallable,NetMulticast,Reliable)
+	void StartMatchTimer();
 };
 
 

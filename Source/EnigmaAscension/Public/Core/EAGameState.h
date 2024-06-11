@@ -44,6 +44,7 @@ public:
 	void Server_BeginTimer();
 	UFUNCTION(NetMulticast,Reliable)
 	void DecrementTimer();
+	void LogClientOrServer();
 	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 

@@ -6,6 +6,7 @@
 #include <Player/EAPlayerState.h>
 
 #include "Core/EAGameInstance.h"
+#include "Core/EAGameState.h"
 #include "DSP/AudioDebuggingUtilities.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/EACharacter.h"
@@ -224,10 +225,10 @@ void AEAGameMode::OnGameWon(bool bIsTeamA)
 {
 	if(bIsTeamA)
 	{
-		
+		UE_LOG(LogGameMode,Log,TEXT("Team A Wins"));
 	}else
 	{
-		
+		UE_LOG(LogGameMode,Log,TEXT("Team B Wins"));
 	}
 }
 
@@ -258,4 +259,13 @@ TSubclassOf<UGameplayEffect>  AEAGameMode::GetRollbackHealthAmount(EEAAbilityInp
 	}
 	
 	
+}
+
+void AEAGameMode::StartMatchTimer_Implementation()
+{
+	AEAGameState *_gameState = Cast<AEAGameState>(UGameplayStatics::GetGameState(GetWorld()));
+	if(IsValid(_gameState) && GetWorld()->GetNetMode() == NM_ListenServer || NM_DedicatedServer){
+		_gameState->Server_BeginTimer_Implementation();
+		UE_LOG(LogGameMode, Log, TEXT("%hs Match Timer Started"), __FUNCTION__);
+	}
 }

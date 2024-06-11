@@ -95,11 +95,6 @@ void UPlayerHUD::HostStartGame()
 	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetShowMouseCursor(false);
 	FInputModeGameOnly GameOnly;
 	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetInputMode(GameOnly);
-	
-	AEAGameState *_gameState = Cast<AEAGameState>(UGameplayStatics::GetGameState(GetWorld()));
-	if(IsValid(_gameState) && GetWorld()->GetNetMode() == NM_ListenServer || NM_DedicatedServer){
-		_gameState->Server_BeginTimer_Implementation();
-	}
 }
 
 void UPlayerHUD::UpdateTimer_Implementation(int time)
