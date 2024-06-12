@@ -368,7 +368,9 @@ void AEACharacter::SpawnCharacter()
 	bIsDead=false;
 	//SetActorEnableCollision(true);
 	EnableInput(UGameplayStatics::GetPlayerController(GetWorld(),0));
-	SetActorLocation(FVector(-12090.000000,-16200.000000,70.000000));
+
+	//SetActorLocation(FVector(-12090.000000,-16200.000000,70.000000));
+	SetActorLocation(ReSpawnPoint.GetLocation());
 	this->SetActorHiddenInGame(false);
 }
 

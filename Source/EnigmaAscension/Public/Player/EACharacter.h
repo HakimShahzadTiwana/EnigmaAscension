@@ -43,7 +43,9 @@ protected:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 	virtual void NotifyControllerChanged() override;
-	
+
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="EA|Properties",meta = (ExposeOnSpawn = "true"))
+	FTransform ReSpawnPoint;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="GAS|Abilities|Tags")
 	FGameplayTag PrimaryAttackTag;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="GAS|Abilities|Tags")
