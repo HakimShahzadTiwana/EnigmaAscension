@@ -23,9 +23,9 @@ public:
 	UPROPERTY(BlueprintReadWrite,ReplicatedUsing = OnRep_ScoreTeamB)
 	int ScoreTeamB=0;
 	UPROPERTY(BlueprintReadOnly)
-	int ScoreLimit = 3; // TODO: Make this Const
+	int ScoreLimit = 5; // TODO: Make this Const
 	UPROPERTY(BlueprintReadOnly,Replicated)
-	int Current_Timer = 120; // in seconds
+	int Current_Timer = 60*15; // in seconds
 	FTimerHandle TimerHandle_DecrementTimer;
 	
 	UFUNCTION()
