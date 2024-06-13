@@ -23,7 +23,9 @@ void AEAGameMode::OnPostLogin(AController* NewPlayer)
 
 	bool AssignedTeam =  ((GetNumPlayers()-1) % 2 == 0) ? true : false;
 	
-	ConnectedPlayerNames.Add(FString::Printf(TEXT("Player %d"),GetNumPlayers()));
+	//ConnectedPlayerNames.Add(FString::Printf(TEXT("Player %d"),GetNumPlayers()));
+	
+	ConnectedPlayerNames.Add(NewPlayer->PlayerState->GetPlayerName());
 	ConnectedPlayerTeams.Add(AssignedTeam);
 	
 	// Set Player Team
