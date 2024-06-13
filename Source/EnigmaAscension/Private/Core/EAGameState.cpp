@@ -12,8 +12,44 @@
 void AEAGameState::OnRep_GameStarted()
 {
 	UE_LOG(LogGameState, Log, TEXT("On_Rep GameStarted"));
-	Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0))->PlayerHUD->HostStartGame();
-	Cast<AEAPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0))->Stats.MatchScore = 0;
+
+	// Get the player controller safely
+	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (PC)
+	{
+		AEAPlayerController* AEAPC = Cast<AEAPlayerController>(PC);
+		if (AEAPC && AEAPC->PlayerHUD)
+		{
+			AEAPC->PlayerHUD->HostStartGame();
+		}
+		else
+		{
+			UE_LOG(LogGameState, Warning, TEXT("PlayerController or PlayerHUD is null"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogGameState, Warning, TEXT("PlayerController not found"));
+	}
+
+	// Get the player state safely
+	APlayerState* PS = UGameplayStatics::GetPlayerState(GetWorld(), 0);
+	if (PS)
+	{
+		AEAPlayerState* AEAPS = Cast<AEAPlayerState>(PS);
+		if (AEAPS)
+		{
+			AEAPS->Stats.MatchScore = 0;
+		}
+		else
+		{
+			UE_LOG(LogGameState, Warning, TEXT("PlayerState cast failed"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogGameState, Warning, TEXT("PlayerState not found"));
+	}
 }
 
 
