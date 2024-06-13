@@ -21,6 +21,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsTeamA;
 	
-	UFUNCTION(NetMulticast, Reliable)
-	void SetPlayerTagProperties(const FString& Name, bool IsTeamA);
+	//UFUNCTION(Client, Reliable)
+	//void SetPlayerTagProperties(const FString& Name, bool IsTeamA);
+	void SetPlayerTagProperties(FString Name, bool IsTeamA);
 };

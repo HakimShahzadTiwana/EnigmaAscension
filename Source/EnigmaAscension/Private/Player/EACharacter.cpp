@@ -82,22 +82,39 @@ void AEACharacter::BeginPlay()
 	UE_LOG(LogGAS,Log,TEXT("AEACharacter::BeginPlay()"));
 	Super::BeginPlay();
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEACharacter::OnHealthChanged);
-	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue,FString::Printf(TEXT("PrimaryAttackTag is : %s"),*PrimaryAttackTag.ToString()));
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetStaminaAttribute()).AddUObject(this, &AEACharacter::OnStaminaChanged);
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetManaAttribute()).AddUObject(this, &AEACharacter::OnManaChanged);
 
+	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue,FString::Printf(TEXT("PrimaryAttackTag is : %s"),*PrimaryAttackTag.ToString()));
+	
 	FTimerHandle TimerHandle;
 	FTimerDelegate TimerDel;
 	
 	// Bind a lambda to the delegate that calls Client_SetupPlayerCharacterUI
+	// Makes it work on clients
 	TimerDel.BindLambda([this]
 	{
-		AEAPlayerController* playerController = Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0));
-		playerController->Client_SetupPlayerCharacterUI(GetPlayerState()->GetPlayerName(), playerController->GetPlayerTeam());
+		if(IsLocallyControlled())
+		{
+			AEAPlayerController* playerController = Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0));
+			playerController->Client_SetupPlayerCharacterUI(GetPlayerState()->GetPlayerName(), playerController->GetPlayerTeam());
+		}
+		else
+		{
+			// Execute on server for all player controllers
+			for (int i = 0; i < UGameplayStatics::GetNumPlayerControllers(GetWorld()); ++i)
+			{
+				AEAPlayerController* playerController = Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), i));
+				if (playerController)
+				{
+					playerController->Server_SetupPlayerCharacterUI(playerController->PlayerState->GetPlayerName(), playerController->GetPlayerTeam());
+				}
+			}
+		}
 	});
 	
 	// Set the timer to call the delegate after 2 seconds
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDel, 2.5f, false);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDel, 2.0f, false);
 }
 
 // Called every frame
@@ -459,7 +476,8 @@ void AEACharacter::EnablePlayerNameTag_Implementation(const FString &name, bool 
 		// }
 		// UE_LOG(LogGAS,Warning,TEXT("EnablePlayerNameTag_Implementation:: Player Name %s"),*LocalPlayerState->GetPlayerName());
 		// TagWidget->SetPlayerTagProperties_Implementation(LocalPlayerState->GetPlayerName(),LocalPlayerState->bIsTeamA);
-		TagWidget->SetPlayerTagProperties_Implementation(name,team);
+		//TagWidget->SetPlayerTagProperties_Implementation(name,team);
+		TagWidget->SetPlayerTagProperties(name,team);
 	}else
 	{
 		UE_LOG(LogGAS,Warning,TEXT("AEACharacter::Unable to Cast UUserWidget to UEAPlayerTagWidget"));

@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/CanvasPanel.h"
 #include "Components/HorizontalBox.h"
+#include "Components/Overlay.h"
 #include "Components/ProgressBar.h"
 #include "Components/VerticalBox.h"
 #include "PlayerHUD.generated.h"
@@ -32,6 +33,8 @@ public:
 	UVerticalBox* LobbyInfoTeamA;
 	UPROPERTY(EditAnywhere,meta=(BindWidget))
 	UVerticalBox* LobbyInfoTeamB;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta=(BindWidget))
+	UOverlay* ExitMatch;
 	
 	// Attribute UI
 	UPROPERTY(EditAnywhere,meta=(BindWidget))
@@ -68,6 +71,8 @@ public:
 	void AddPlayer_LobbyInfo(TArray<FString> PlayerNames , TArray<bool> PlayerTeams);
 	UFUNCTION()
 	void HostStartGame();
+	UFUNCTION(BlueprintCallable)
+	void OpenExitMenu();
 	UFUNCTION(Client,Reliable)
 	void UpdateTeamScore(bool bIsTeamA, int Score);
 	UFUNCTION(Client,Reliable)

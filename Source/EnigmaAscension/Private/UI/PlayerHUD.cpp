@@ -97,6 +97,11 @@ void UPlayerHUD::HostStartGame()
 	UGameplayStatics::GetPlayerController(GetWorld(),0)->SetInputMode(GameOnly);
 }
 
+void UPlayerHUD::OpenExitMenu()
+{
+	ExitMatch->SetVisibility(ESlateVisibility::Visible);
+}
+
 void UPlayerHUD::UpdateTimer_Implementation(int time)
 {
 	UE_LOG(LogCore, Log, TEXT("%s - Updating UI for Timer"), *FString(__FUNCTION__));

@@ -51,6 +51,54 @@ void AEAGameMode::OnPostLogin(AController* NewPlayer)
 	// Keep track of the frame that the server was on when the player joined the match
 	UE_LOG(LogGameMode, Log, TEXT("Player with index %d join on server frame %d"),GetNumPlayers()-1,Server_FrameCount);
 	ClientStartFrame.Add(GetNumPlayers()-1,Server_FrameCount);
+
+	AEAGameState* EA_GS = Cast<AEAGameState>(UGameplayStatics::GetGameState(GetWorld()));
+	if(IsValid(EA_GS))
+	{
+		if(EA_GS->bGameStarted)
+		{
+			UE_LOG(LogTemp,Log,TEXT("AEAGameMode::OnPostLogin SetInputModeGameOnly"));
+			//const FInputModeGameOnly InputMode;
+			// SetInputMode(InputMode);
+			// bShowMouseCursor = false;
+			// // Get the player controller safely
+			// APlayerController* PC = EA_Controller;
+			// if (PC)
+			// {
+					EA_Controller->SetShowMouseCursor(false);
+					FInputModeGameOnly GameOnly;
+					EA_Controller->SetInputMode(GameOnly);
+					EA_Controller->SetInputModeGameOnly_Implementation();
+			// }
+			// else
+			// {
+			// 	UE_LOG(LogGameState, Warning, TEXT("PlayerController not found"));
+			// }
+
+			// Get the player state safely
+			APlayerState* PS = EA_Controller->PlayerState;
+			if (PS)
+			{
+				AEAPlayerState* AEAPS = Cast<AEAPlayerState>(PS);
+				if (AEAPS)
+				{
+					AEAPS->Stats.MatchScore = 0;
+				}
+				else
+				{
+					UE_LOG(LogGameState, Warning, TEXT("PlayerState cast failed"));
+				}
+			}
+			else
+			{
+				UE_LOG(LogGameState, Warning, TEXT("PlayerState not found"));
+			}
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp,Log,TEXT("AEAPlayerController::OnPossess Game State Invalid"));
+	}
 }
 
 void AEAGameMode::BeginPlay()

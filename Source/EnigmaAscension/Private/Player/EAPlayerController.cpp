@@ -5,6 +5,7 @@
 
 #include "Abilities/GameplayAbilityTypes.h"
 #include "Core/EAGameMode.h"
+#include "Core/EAGameState.h"
 #include "EnigmaAscension/EnigmaAscension.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/PlayerState.h"
@@ -286,7 +287,8 @@ void AEAPlayerController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 	PlayerPawn = InPawn;
 	UE_LOG(LogTemp,Log,TEXT("AEAPlayerController::OnPossess"));
-	Client_SetupPlayerCharacterUI(PlayerState->GetPlayerName(),GetPlayerTeam());
+	// Makes it work on Server
+	//Client_SetupPlayerCharacterUI(PlayerState->GetPlayerName(),GetPlayerTeam());
 }
 
 void AEAPlayerController::Client_TimerUI_Implementation(int time)
@@ -295,6 +297,19 @@ void AEAPlayerController::Client_TimerUI_Implementation(int time)
 }
 
 void AEAPlayerController::Client_SetupPlayerCharacterUI_Implementation(const FString &name, bool team)
+{
+	AEACharacter* myCharacter = Cast<AEACharacter>(GetCharacter());
+	if(IsValid(myCharacter))
+	{
+		FString temp = name;
+		myCharacter->EnablePlayerNameTag(temp,team);
+	}else
+	{
+		UE_LOG(LogTemp,Log,TEXT("AEAPlayerController::Client_SetupPlayerCharacterUI_Implementation myCharacter is Not Valid"));
+	}
+}
+
+void AEAPlayerController::Server_SetupPlayerCharacterUI_Implementation(const FString& name, bool team)
 {
 	AEACharacter* myCharacter = Cast<AEACharacter>(GetCharacter());
 	if(IsValid(myCharacter))
@@ -313,6 +328,13 @@ void AEAPlayerController::Open_GameWonUI(bool bTeamAWon)
 	{
 		
 	}
+}
+
+void AEAPlayerController::SetInputModeGameOnly_Implementation()
+{
+	SetShowMouseCursor(false);
+	FInputModeGameOnly GameOnly;
+	SetInputMode(GameOnly);
 }
 
 

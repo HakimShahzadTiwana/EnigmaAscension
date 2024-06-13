@@ -65,7 +65,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	UPROPERTY(EditAnywhere,Category="UI|PlayerHUD")
 	TSubclassOf<UPlayerHUD> PlayerHUDClass;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	UPlayerHUD* PlayerHUD;
 
 	
@@ -112,9 +112,13 @@ public:
 	virtual void Client_TimerUI(int time);
 	UFUNCTION(Client,Reliable)
 	virtual void Client_CreateHUD();
-	UFUNCTION(NetMulticast,Reliable,BlueprintCallable)
+	UFUNCTION(Client,Reliable,BlueprintCallable)
 	virtual void Client_SetupPlayerCharacterUI(const FString &name, bool team);
+	UFUNCTION(Server,Reliable,BlueprintCallable)
+	virtual void Server_SetupPlayerCharacterUI(const FString &name, bool team);
 
 	UFUNCTION()
 	void Open_GameWonUI(bool bTeamAWon);
+	UFUNCTION(NetMulticast,Reliable)
+	void SetInputModeGameOnly();
 };
