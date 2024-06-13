@@ -17,6 +17,7 @@
 #include "Core/EAGameMode.h"
 #include "Core/EAGameState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 #include "Player/EAPlayerController.h"
 #include "SupportItems/EASupportItemBase.h"
 #include "UI/EAPlayerTagWidget.h"
@@ -43,6 +44,20 @@ AEACharacter::AEACharacter()
 	PlayerTagWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerTagWidget"));
 	PlayerTagWidget->SetupAttachment(RootComponent);
 	
+}
+
+void AEACharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	// Add properties to replicate here
+	DOREPLIFETIME(AEACharacter, isBlocking);
+}
+
+
+void AEACharacter::Server_SetIsBlocking_Implementation(bool state)
+{
+	isBlocking = state;
 }
 
 // Called when the game starts or when spawned
@@ -82,7 +97,7 @@ void AEACharacter::PossessedBy(AController* NewController)
 		InitializeAttributes();
 		//Only server should give the abilities
 		GiveDefaultAbilities();
-		EnablePlayerNameTag_Implementation();
+		// EnablePlayerNameTag_Implementation();
 	}
 	else
 	{
@@ -402,54 +417,43 @@ void AEACharacter::RollbackAnimation(EEAAbilityInput InputType,float ping)
 	}
 }
 
-void AEACharacter::EnablePlayerNameTag_Implementation()
+void AEACharacter::EnablePlayerNameTag_Implementation(const FString &name, bool team)
 {
-	UE_LOG(LogGAS,Warning,TEXT("AEACharacter::EnablePlayerNameTag_Implementation() Called"));
-	// Check if this instance has authority (is the server or standalone game)
-	if (HasAuthority())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("This is the Server"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("This is the Client"));
-	}
-
-	// Check the network mode explicitly
-	ENetMode NetMode = GetNetMode();
-	switch (NetMode)
-	{
-	case NM_Standalone:
-		UE_LOG(LogTemp, Warning, TEXT("Running in Standalone mode"));
-		break;
-	case NM_Client:
-		UE_LOG(LogTemp, Warning, TEXT("Running on a Client"));
-		break;
-	case NM_ListenServer:
-		UE_LOG(LogTemp, Warning, TEXT("Running as a Listen Server"));
-		break;
-	case NM_DedicatedServer:
-		UE_LOG(LogTemp, Warning, TEXT("Running as a Dedicated Server"));
-		break;
-	default:
-		UE_LOG(LogTemp, Warning, TEXT("Unknown network mode"));
-		break;
-	}
 	UEAPlayerTagWidget* TagWidget = Cast<UEAPlayerTagWidget>(PlayerTagWidget->GetWidget());
 	if(IsValid(TagWidget))
 	{
-		AEAPlayerState* LocalPlayerState = Controller->GetPlayerState<AEAPlayerState>();
-		if(!IsValid(LocalPlayerState)){
-			UE_LOG(LogGAS,Warning,TEXT("EnablePlayerNameTag_Implementation:: LocalPlayerState is Invalid"),*LocalPlayerState->GetPlayerName());
-			return;
-		}
-		UE_LOG(LogGAS,Warning,TEXT("EnablePlayerNameTag_Implementation:: Player Name %s"),*LocalPlayerState->GetPlayerName());
-		TagWidget->SetPlayerTagProperties_Implementation(LocalPlayerState->GetPlayerName(),LocalPlayerState->bIsTeamA);
+		// AEAPlayerState* LocalPlayerState = Controller->GetPlayerState<AEAPlayerState>();
+		// if(!IsValid(LocalPlayerState)){
+		// 	UE_LOG(LogGAS,Warning,TEXT("EnablePlayerNameTag_Implementation:: LocalPlayerState is Invalid"),*LocalPlayerState->GetPlayerName());
+		// 	return;
+		// }
+		// UE_LOG(LogGAS,Warning,TEXT("EnablePlayerNameTag_Implementation:: Player Name %s"),*LocalPlayerState->GetPlayerName());
+		// TagWidget->SetPlayerTagProperties_Implementation(LocalPlayerState->GetPlayerName(),LocalPlayerState->bIsTeamA);
+		TagWidget->SetPlayerTagProperties_Implementation(name,team);
 	}else
 	{
 		UE_LOG(LogGAS,Warning,TEXT("AEACharacter::Unable to Cast UUserWidget to UEAPlayerTagWidget"));
 	}
 }
+
+// void AEACharacter::EnablePlayerNameTag(FString name, bool team)
+// {
+// 	UEAPlayerTagWidget* TagWidget = Cast<UEAPlayerTagWidget>(PlayerTagWidget->GetWidget());
+// 	if(IsValid(TagWidget))
+// 	{
+// 		// AEAPlayerState* LocalPlayerState = Controller->GetPlayerState<AEAPlayerState>();
+// 		// if(!IsValid(LocalPlayerState)){
+// 		// 	UE_LOG(LogGAS,Warning,TEXT("EnablePlayerNameTag_Implementation:: LocalPlayerState is Invalid"),*LocalPlayerState->GetPlayerName());
+// 		// 	return;
+// 		// }
+// 		// UE_LOG(LogGAS,Warning,TEXT("EnablePlayerNameTag_Implementation:: Player Name %s"),*LocalPlayerState->GetPlayerName());
+// 		// TagWidget->SetPlayerTagProperties_Implementation(LocalPlayerState->GetPlayerName(),LocalPlayerState->bIsTeamA);
+// 		TagWidget->SetPlayerTagProperties_Implementation(name,team);
+// 	}else
+// 	{
+// 		UE_LOG(LogGAS,Warning,TEXT("AEACharacter::Unable to Cast UUserWidget to UEAPlayerTagWidget"));
+// 	}
+// }
 
 void AEACharacter::Server_PickupSupportItem_Implementation(AEASupportItemBase* Item)
 {

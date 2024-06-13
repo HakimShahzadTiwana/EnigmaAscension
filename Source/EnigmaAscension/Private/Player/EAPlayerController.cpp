@@ -14,6 +14,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Player/EACharacter.h"
 #include "Player/EAPlayerState.h"
+#include "UI/EAPlayerTagWidget.h"
 
 AEAPlayerController::AEAPlayerController()
 {
@@ -218,6 +219,11 @@ void AEAPlayerController::StopSprint()
 {
 }
 
+bool AEAPlayerController::GetPlayerTeam()
+{
+	return bIsTeamA;
+}
+
 void AEAPlayerController::Server_CollectInputData_Implementation(FPlayerInputData Data)
 {
 	int ClientFrames = Data.PlayerInputID.Frame;
@@ -288,6 +294,15 @@ void AEAPlayerController::OnPossess(APawn* InPawn)
 void AEAPlayerController::Client_TimerUI_Implementation(int time)
 {
 	PlayerHUD->UpdateTimer(time);
+}
+
+void AEAPlayerController::Client_SetupPlayerCharacterUI_Implementation(const FString &name, bool team)
+{
+	AEACharacter* myCharacter = Cast<AEACharacter>(GetCharacter());
+	if(IsValid(myCharacter))
+	{
+		myCharacter->EnablePlayerNameTag(name,team);
+	}
 }
 
 void AEAPlayerController::Open_GameWonUI(bool bTeamAWon)

@@ -90,6 +90,8 @@ public:
 	void StartSprint();
 	UFUNCTION()
 	void StopSprint();
+	UFUNCTION(BlueprintCallable,BlueprintPure)
+	bool GetPlayerTeam(); 
 
 	// Roll Back Net Code
 	UFUNCTION(BlueprintCallable,Server, Reliable)
@@ -110,6 +112,8 @@ public:
 	virtual void Client_TimerUI(int time);
 	UFUNCTION(Client,Reliable)
 	virtual void Client_CreateHUD();
+	UFUNCTION(NetMulticast,Reliable,BlueprintCallable)
+	virtual void Client_SetupPlayerCharacterUI(const FString &name, bool team);
 
 	UFUNCTION()
 	void Open_GameWonUI(bool bTeamAWon);

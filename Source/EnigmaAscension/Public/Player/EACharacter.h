@@ -36,7 +36,10 @@ class ENIGMAASCENSION_API AEACharacter : public ACharacter,public IAbilitySystem
 public:
 	// Sets default values for this character's properties
 	AEACharacter();
-	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Replicated)
+	bool isBlocking = false;
+	UFUNCTION(Server,Reliable,BlueprintCallable)
+	void Server_SetIsBlocking(bool state);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -131,8 +134,8 @@ protected:
 	void OnStaminaChanged(const FOnAttributeChangeData& OnAttributeChangeData);
 	void OnManaChanged(const FOnAttributeChangeData& OnAttributeChangeData);
 	void HideCharacterOnDeath();
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	
 
 public:	
 	// Called every frame
@@ -154,7 +157,7 @@ public:
 	UFUNCTION(Server,Reliable)
 	void Server_PickupSupportItem(AEASupportItemBase* Item);
 	UFUNCTION(NetMulticast,Reliable)
-	void EnablePlayerNameTag();
+	void EnablePlayerNameTag(const FString &name, bool team);
 
 	
 	
