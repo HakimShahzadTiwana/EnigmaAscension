@@ -43,7 +43,7 @@ AEACharacter::AEACharacter()
 
 	PlayerTagWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlayerTagWidget"));
 	PlayerTagWidget->SetupAttachment(RootComponent);
-	
+	PlayerTagWidget->SetIsReplicated(true);
 }
 
 void AEACharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -52,6 +52,8 @@ void AEACharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 
 	// Add properties to replicate here
 	DOREPLIFETIME(AEACharacter, isBlocking);
+	DOREPLIFETIME(AEACharacter, PlayerTagWidget);
+	//DOREPLIFETIME(AEACharacter, PlayerName);
 }
 
 
@@ -59,6 +61,20 @@ void AEACharacter::Server_SetIsBlocking_Implementation(bool state)
 {
 	isBlocking = state;
 }
+
+// void AEACharacter::OnRep_PlayerName()
+// {
+// 	UE_LOG(LogTemp, Log, TEXT("PlayerName has been updated to: %s"), *PlayerName);
+// 	UEAPlayerTagWidget* TagWidget = Cast<UEAPlayerTagWidget>(PlayerTagWidget->GetWidget());
+// 	if(IsValid(TagWidget))
+// 	{
+// 		AEAPlayerState* state = Cast<AEAPlayerState>(GetPlayerState());
+// 		TagWidget->SetPlayerTagProperties_Implementation(PlayerName,state->bIsTeamA);
+// 	}else
+// 	{
+// 		UE_LOG(LogGAS,Warning,TEXT("AEACharacter::Unable to Cast UUserWidget to UEAPlayerTagWidget"));
+// 	}
+// }
 
 // Called when the game starts or when spawned
 void AEACharacter::BeginPlay()
@@ -69,6 +85,19 @@ void AEACharacter::BeginPlay()
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Blue,FString::Printf(TEXT("PrimaryAttackTag is : %s"),*PrimaryAttackTag.ToString()));
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetStaminaAttribute()).AddUObject(this, &AEACharacter::OnStaminaChanged);
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetManaAttribute()).AddUObject(this, &AEACharacter::OnManaChanged);
+
+	FTimerHandle TimerHandle;
+	FTimerDelegate TimerDel;
+	
+	// Bind a lambda to the delegate that calls Client_SetupPlayerCharacterUI
+	TimerDel.BindLambda([this]
+	{
+		AEAPlayerController* playerController = Cast<AEAPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0));
+		playerController->Client_SetupPlayerCharacterUI(GetPlayerState()->GetPlayerName(), playerController->GetPlayerTeam());
+	});
+	
+	// Set the timer to call the delegate after 2 seconds
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDel, 2.5f, false);
 }
 
 // Called every frame
@@ -98,6 +127,7 @@ void AEACharacter::PossessedBy(AController* NewController)
 		//Only server should give the abilities
 		GiveDefaultAbilities();
 		// EnablePlayerNameTag_Implementation();
+		// PlayerName = GetPlayerState()->GetPlayerName();
 	}
 	else
 	{

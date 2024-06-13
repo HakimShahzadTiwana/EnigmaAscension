@@ -34,11 +34,8 @@ void AEAPlayerController::BeginPlay()
 			EA_GameMode->Notify_GameWon.AddDynamic(this, &AEAPlayerController::Open_GameWonUI);
 		}
 	}
-	
 	//Binding Gas Abilities here because InputComponent is called before begin play and Pawn is not valid there
 	//BindGasInputs();
-	
-	
 }
 
 void AEAPlayerController::Tick(float DeltaSeconds)
@@ -289,6 +286,7 @@ void AEAPlayerController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 	PlayerPawn = InPawn;
 	UE_LOG(LogTemp,Log,TEXT("AEAPlayerController::OnPossess"));
+	Client_SetupPlayerCharacterUI(PlayerState->GetPlayerName(),GetPlayerTeam());
 }
 
 void AEAPlayerController::Client_TimerUI_Implementation(int time)
@@ -302,6 +300,9 @@ void AEAPlayerController::Client_SetupPlayerCharacterUI_Implementation(const FSt
 	if(IsValid(myCharacter))
 	{
 		myCharacter->EnablePlayerNameTag(name,team);
+	}else
+	{
+		UE_LOG(LogTemp,Log,TEXT("AEAPlayerController::Client_SetupPlayerCharacterUI_Implementation myCharacter is Not Valid"));
 	}
 }
 

@@ -18,7 +18,6 @@ AEAPlayerState::AEAPlayerState()
 void AEAPlayerState::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 int AEAPlayerState::GetPlayerIndex() const

@@ -35,7 +35,7 @@ public:
 	AEAPlayerState();
 	UPROPERTY(Replicated)
 	int MyPlayerIndex;
-	UPROPERTY(Replicated,BlueprintReadWrite)// TODO: Set this in Game Mode
+	UPROPERTY(Replicated,BlueprintReadWrite)
 	bool bIsTeamA;
 	UPROPERTY(Replicated,BlueprintReadWrite)
 	FPlayerStatistics Stats;

@@ -40,6 +40,12 @@ public:
 	bool isBlocking = false;
 	UFUNCTION(Server,Reliable,BlueprintCallable)
 	void Server_SetIsBlocking(bool state);
+	
+	// UPROPERTY(ReplicatedUsing=OnRep_PlayerName)
+	// FString PlayerName;
+	// UFUNCTION()
+	// void OnRep_PlayerName();
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -102,7 +108,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly,EditDefaultsOnly,Category="GAS|Defaults")
 	TArray<TSubclassOf<class UEAGameplayAbility>> DefaultAbilities;
 
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "UI")
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "UI",Replicated)
 	UWidgetComponent* PlayerTagWidget;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "UI")
@@ -158,9 +164,6 @@ public:
 	void Server_PickupSupportItem(AEASupportItemBase* Item);
 	UFUNCTION(NetMulticast,Reliable)
 	void EnablePlayerNameTag(const FString &name, bool team);
-
-	
-	
 };
 
 
