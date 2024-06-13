@@ -153,6 +153,8 @@ public:
 
 	UFUNCTION(Server,Reliable)
 	void Server_PickupSupportItem(AEASupportItemBase* Item);
+	UFUNCTION(NetMulticast,Reliable)
+	void EnablePlayerNameTag();
 
 	
 	

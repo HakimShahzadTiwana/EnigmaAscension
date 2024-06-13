@@ -12,6 +12,7 @@
 AEAPlayerState::AEAPlayerState()
 {
 	SetShouldUpdateReplicatedPing(true);
+	SetReplicates(true);
 }
 
 void AEAPlayerState::BeginPlay()

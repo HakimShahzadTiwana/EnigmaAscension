@@ -20,7 +20,7 @@ public:
 	UTextBlock* PlayerName;
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsTeamA;
-
-	UFUNCTION()
-	void SetPlayerTagProperties(FString Name,bool IsTeamA);
+	
+	UFUNCTION(NetMulticast, Reliable)
+	void SetPlayerTagProperties(const FString& Name, bool IsTeamA);
 };
